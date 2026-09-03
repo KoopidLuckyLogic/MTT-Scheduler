@@ -1,0 +1,11 @@
+# OS/editor cruft
+desktop.ini
+Thumbs.db
+.DS_Store
+
+# Not part of this site — a separate/older project living in this folder
+/vi-liveops-main/
+/vi-event-overview-2026.html
+
+# Local tooling, not part of the published site
+/.claude/

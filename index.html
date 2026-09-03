@@ -1,0 +1,2168 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Vegas Infinite — Tournament Schedule</title>
+<meta name="description" content="Vegas Infinite MTT tournament schedule. All start times shown in Eastern Time (ET).">
+<meta name="color-scheme" content="dark">
+<link rel="icon" href="assets/favicon.png" type="image/png">
+
+<style>
+/* ==========================================================================
+   BRAND FONT — Capitana, self-hosted from assets/fonts/.
+   Served from this repo, so the page still has zero external dependencies.
+   font-display:swap means text paints immediately in the fallback and swaps
+   when the font arrives, so a slow headset connection never blanks the page.
+   ========================================================================== */
+@font-face{
+  font-family:"Capitana";
+  src:url("assets/fonts/capitana-regular.otf") format("opentype");
+  font-weight:400; font-style:normal; font-display:swap;
+}
+@font-face{
+  font-family:"Capitana";
+  src:url("assets/fonts/capitana-bold.otf") format("opentype");
+  font-weight:700; font-style:normal; font-display:swap;
+}
+</style>
+
+<style>
+/* ==========================================================================
+   THEME TOKENS
+   Gold values sampled directly from the Vegas Infinite wordmark.
+   To rebrand, change values in this block only — nothing below depends on
+   a specific colour.
+   ========================================================================== */
+:root{
+  color-scheme: dark;
+
+  /* Brand gold */
+  --gold-deep:#B07820;
+  --gold-mid:#C08830;
+  --gold:#D9A441;
+  --gold-bright:#F8D088;
+  --gold-pale:#F8ECC8;
+  --grad-gold:linear-gradient(178deg,#F8F0D0 0%,#F8D088 36%,#C08830 72%,#B07820 100%);
+
+  /* Surfaces */
+  --bg:#0A0A0C;
+  --bg-2:#101014;
+  --surface:#17171D;
+  --surface-2:#1E1E26;
+  --surface-3:#262630;
+  --line:#2C2C38;
+  --line-strong:#3E3E4C;
+
+  /* Text — verified ≥7:1 on --surface */
+  --text:#F4F1EA;        /* body        — 12.9:1 on --surface */
+  --text-dim:#B9B4A9;    /* secondary   —  9.6:1 on --surface */
+  --text-faint:#A6A29A;  /* micro-label —  7.0:1 on --surface, 6.5:1 on --surface-2 */
+
+  /* Category accents — all ≥4.5:1 on --surface */
+  --c-weekly:#8FB8E8;
+  --c-club:#C0A2F0;
+  --c-highlight:var(--gold-bright);
+
+  /* Series accents (referenced by SERIES[].accent) */
+  --a-gold:#F8D088;
+  --a-orange:#FF9A4D;
+  --a-violet:#C0A2F0;
+  --a-teal:#6FD3C4;
+  --a-mpt:#22D3EE;
+  --grad-mpt:linear-gradient(100deg,#2FE6B8 0%,#22D3EE 45%,#3E7BFA 100%);
+
+  /* The Club — neon sign palette, scoped to the Club tab only */
+  --club-pink:#FF6FD8;
+  --club-pink-bright:#FF9FE8;
+  --club-violet:#B24CFF;
+  --club-glow:0 0 6px rgba(255,111,216,.85), 0 0 18px rgba(255,111,216,.5), 0 0 42px rgba(178,76,255,.35);
+
+  --ok:#69D48F;
+  --warn:#FFC65C;
+  --bad:#FF7B72;
+
+  /* Sizing — VR-headset readability floor. Do not reduce.
+     Every sub-1rem font-size below is wrapped in max(16px, …) so that no
+     text can fall under 16px when the fluid root shrinks on a narrow
+     viewport. Keep that pattern if you add styles. */
+  --tap:56px;          /* primary controls */
+  --tap-sm:48px;       /* filter chips */
+  --r:14px;            /* radius */
+  --r-lg:20px;
+  --pad:clamp(14px,3vw,26px);
+  --maxw:1180px;
+
+  --ff:"Capitana","Segoe UI Variable Display","Segoe UI",system-ui,-apple-system,"Helvetica Neue",Arial,sans-serif;
+}
+
+/* Fluid base: ~18px on a phone, ~22px on a large/VR viewport.
+   Every other size is in rem, so nothing falls below 16px. */
+html{ font-size:clamp(18px, 0.55vw + 16.4px, 22px); -webkit-text-size-adjust:100%; }
+
+*,*::before,*::after{ box-sizing:border-box; }
+
+body{
+  margin:0;
+  font-family:var(--ff);
+  font-size:1rem;
+  line-height:1.55;
+  color:var(--text);
+  background:
+    radial-gradient(1100px 620px at 50% -12%, rgba(176,120,32,.16), transparent 68%),
+    radial-gradient(760px 460px at 92% 4%, rgba(192,162,240,.07), transparent 70%),
+    var(--bg);
+  background-attachment:fixed;
+  -webkit-font-smoothing:antialiased;
+}
+
+h1,h2,h3{ margin:0; line-height:1.2; font-weight:650; }
+p{ margin:0; }
+button{ font:inherit; color:inherit; }
+
+.wrap{ max-width:var(--maxw); margin:0 auto; padding:0 var(--pad); }
+
+/* Gradient brand text, with a safe fallback */
+.grad{ color:var(--gold-bright); }
+@supports ((background-clip:text) or (-webkit-background-clip:text)){
+  .grad{
+    background:var(--grad-gold);
+    -webkit-background-clip:text; background-clip:text;
+    color:transparent; -webkit-text-fill-color:transparent;
+  }
+}
+
+/* Focus — VR browsers are often driven by controller/d-pad, so focus must
+   always be unmistakable. */
+:focus-visible{ outline:3px solid var(--gold-bright); outline-offset:3px; border-radius:6px; }
+
+.sr{ position:absolute; width:1px; height:1px; margin:-1px; padding:0; overflow:hidden;
+     clip:rect(0 0 0 0); clip-path:inset(50%); white-space:nowrap; border:0; }
+
+/* ---------------------------------------------------------------- header -- */
+header.site{ padding:clamp(20px,4vw,40px) 0 clamp(14px,2vw,20px); }
+header.site .wrap{ text-align:center; }
+.brandrow{ display:flex; align-items:center; justify-content:center; gap:clamp(12px,2vw,20px); flex-wrap:wrap; }
+.brandrow img.logo{ width:clamp(220px,44vw,430px); height:auto; display:block; }
+.site h1{ font-size:clamp(1.15rem,3.4vw,1.6rem); letter-spacing:.13em; text-transform:uppercase;
+          font-weight:600; }
+.site .kicker{
+  display:inline-block; margin-top:.7rem; padding:.42em .9em;
+  font-size:max(16px,.82rem); letter-spacing:.09em; text-transform:uppercase; font-weight:600;
+  color:var(--gold-bright); background:rgba(176,120,32,.14);
+  border:1px solid rgba(248,208,136,.3); border-radius:999px;
+}
+/* ------------------------------------------------------------------ tabs -- */
+.tabbar{
+  position:sticky; top:0; z-index:40;
+  background:rgba(10,10,12,.93);
+  backdrop-filter:blur(14px);
+  border-bottom:1px solid var(--line);
+  margin-bottom:clamp(18px,3vw,30px);
+}
+.tabs{
+  display:flex; gap:.5rem; overflow-x:auto; scrollbar-width:thin;
+  padding:.6rem var(--pad); max-width:var(--maxw); margin:0 auto;
+  scroll-snap-type:x proximity;
+}
+.tabs::-webkit-scrollbar{ height:8px; }
+.tabs::-webkit-scrollbar-thumb{ background:var(--line-strong); border-radius:8px; }
+.tab{
+  flex:0 0 auto; scroll-snap-align:start;
+  min-height:var(--tap); padding:0 1.15rem;
+  display:inline-flex; align-items:center; gap:.5em;
+  font-size:max(16px,.95rem); font-weight:600; letter-spacing:.02em;
+  color:var(--text-dim);
+  background:var(--surface); border:1px solid var(--line);
+  border-radius:999px; cursor:pointer;
+  transition:background .16s, color .16s, border-color .16s;
+}
+.tab:hover{ color:var(--text); border-color:var(--line-strong); }
+.tab[aria-selected="true"]{
+  color:#1A1206; border-color:transparent; font-weight:700;
+  background:linear-gradient(180deg,#F8DFA4,#D9A441 62%,#B98421);
+}
+.tab .n{
+  font-size:max(16px,.78rem); font-weight:700; padding:.05em .5em; border-radius:999px;
+  background:rgba(255,255,255,.09); color:inherit; min-width:1.7em; text-align:center;
+}
+.tab[aria-selected="true"] .n{ background:rgba(26,18,6,.2); }
+
+/* --------------------------------------------------------------- section -- */
+.panel{ padding-bottom:clamp(30px,6vw,60px); }
+.sec{ margin-bottom:clamp(26px,5vw,44px); }
+.sec-h{
+  display:flex; align-items:baseline; justify-content:space-between; gap:1rem;
+  flex-wrap:wrap; margin-bottom:1rem;
+  padding-bottom:.7rem; border-bottom:1px solid var(--line);
+}
+.sec-h h2{
+  font-size:clamp(.95rem,2.4vw,1.08rem); letter-spacing:.15em;
+  text-transform:uppercase; color:var(--gold-bright); font-weight:650;
+}
+.sec-h .sub{ font-size:max(16px,.9rem); color:var(--text-dim); }
+
+/* ------------------------------------------------------------------ hero -- */
+.hero{
+  position:relative; overflow:hidden;
+  border:1px solid rgba(248,208,136,.26); border-radius:var(--r-lg);
+  background:
+    radial-gradient(760px 300px at 8% 0%, rgba(176,120,32,.2), transparent 66%),
+    linear-gradient(165deg,var(--surface-2),var(--surface));
+  padding:clamp(20px,4vw,36px);
+}
+.hero::before{
+  content:""; position:absolute; inset:0 0 auto 0; height:3px;
+  background:var(--grad-gold);
+}
+.hero .status{
+  display:inline-flex; align-items:center; gap:.55em;
+  font-size:max(16px,.83rem); font-weight:700; letter-spacing:.11em; text-transform:uppercase;
+  color:var(--gold-bright); margin-bottom:.85rem;
+}
+.hero .status .dot{
+  width:.62em; height:.62em; border-radius:50%; background:var(--gold-bright);
+  box-shadow:0 0 0 0 rgba(248,208,136,.6); animation:pulse 2.4s infinite;
+}
+.hero.live .status{ color:var(--ok); }
+.hero.live .status .dot{ background:var(--ok); box-shadow:0 0 0 0 rgba(105,212,143,.6); }
+@keyframes pulse{ 70%{ box-shadow:0 0 0 .7em rgba(248,208,136,0); } 100%{ box-shadow:0 0 0 0 rgba(248,208,136,0); } }
+
+.hero h3{ font-size:clamp(1.55rem,5.4vw,2.5rem); font-weight:750; letter-spacing:-.01em; }
+
+.cd{ display:flex; gap:.6rem; margin:clamp(16px,3vw,24px) 0; flex-wrap:wrap; }
+.cd .u{
+  min-width:4.6rem; padding:.6rem .5rem; text-align:center;
+  background:rgba(0,0,0,.34); border:1px solid var(--line); border-radius:var(--r);
+}
+.cd .u b{
+  display:block; font-size:clamp(1.5rem,4.6vw,2.1rem); font-weight:700;
+  font-variant-numeric:tabular-nums; letter-spacing:.01em; color:var(--gold-bright);
+}
+.cd .u small{
+  display:block; font-size:max(16px,.76rem); letter-spacing:.13em; text-transform:uppercase;
+  color:var(--text-faint); margin-top:.15rem;
+}
+.cd.running{ align-items:center; }
+.cd.running .msg{
+  padding:.75rem 1.1rem; font-size:1.05rem; font-weight:650; color:var(--ok);
+  background:rgba(105,212,143,.12); border:1px solid rgba(105,212,143,.34);
+  border-radius:var(--r);
+}
+
+/* ------------------------------------------------------------------ card -- */
+.day{ margin-bottom:1rem; }
+.day-h{
+  display:flex; align-items:baseline; gap:.6em; flex-wrap:wrap;
+  margin:0 0 .45rem; padding:0 .2rem;
+  font-size:max(16px,.88rem); font-weight:700; letter-spacing:.09em; text-transform:uppercase;
+  color:var(--text-dim);
+}
+.day-h .today{ color:var(--gold-bright); }
+.day-h .cnt{ font-size:max(16px,.78rem); font-weight:600; letter-spacing:.04em; color:var(--text-faint);
+             text-transform:none; }
+
+.list{ display:flex; flex-direction:column; gap:.4rem; }
+
+/* Event row — rebuilt for density: a long day (a Sunny-Stacks-scale schedule
+   can run 16 events in one day) has to read as a scannable list, not a stack
+   of separate cards each carrying their own subtitle line AND a badge row.
+   Name + a single "speed · buy-in" meta line is the whole collapsed row;
+   the meta line only grows a pill when something is genuinely exceptional
+   (prizes, freeroll, running now, changed this week) — routine info
+   (speed, buy-in, club) is plain text on that same line, not a badge. */
+.ev{
+  border:1px solid var(--line); border-radius:var(--r);
+  background:var(--surface); overflow:hidden;
+  transition:border-color .16s;
+}
+.ev:hover{ border-color:var(--line-strong); }
+.ev.is-past{ opacity:.55; }
+.ev.is-running{ border-color:rgba(105,212,143,.5); }
+.ev.is-main{
+  border-color:rgba(248,208,136,.45);
+  background:linear-gradient(120deg, rgba(176,120,32,.14), var(--surface) 60%);
+}
+.ev.is-main .ev-name{ color:var(--gold-bright); }
+
+.ev-head{
+  width:100%; min-height:var(--tap-sm);
+  display:grid; grid-template-columns:auto 1fr auto; align-items:center;
+  gap:clamp(.6rem,1.8vw,.95rem);
+  padding:clamp(.5rem,1.4vw,.68rem) clamp(.7rem,1.8vw,.95rem);
+  background:none; border:0; text-align:left; cursor:pointer;
+  border-left:4px solid var(--accent,var(--line-strong));
+}
+.ev-head:hover{ background:var(--surface-2); }
+
+.ev-time{ display:flex; flex-direction:column; min-width:4.6rem; line-height:1.25; }
+.ev-time b{ font-size:1.04rem; font-weight:700; font-variant-numeric:tabular-nums; }
+.ev-time small{ font-size:max(16px,.76rem); color:var(--text-faint); white-space:nowrap; }
+
+.ev-main{ min-width:0; line-height:1.3; }
+.ev-name{ display:block; font-size:1.02rem; font-weight:650; }
+/* one flex row: the plain-text descriptor, then any exception pills — all
+   wrapping together instead of the descriptor and the badges stacking as
+   two separate lines underneath the name. */
+.ev-meta{ display:flex; flex-wrap:wrap; align-items:baseline; gap:.15rem .55em; margin-top:.2rem; }
+.ev-meta .meta-text{ font-size:max(16px,.85rem); color:var(--text-dim); }
+.b{
+  display:inline-flex; align-items:center; gap:.35em;
+  font-size:max(16px,.78rem); font-weight:650; letter-spacing:.03em;
+  padding:.16em .6em; border-radius:999px;
+  border:1px solid var(--line-strong); color:var(--text-dim); background:var(--surface-2);
+  white-space:nowrap;
+}
+.b.acc{ color:var(--accent,var(--gold-bright)); border-color:color-mix(in srgb,var(--accent,var(--gold-bright)) 42%, transparent);
+        background:color-mix(in srgb,var(--accent,var(--gold-bright)) 12%, transparent); }
+.b.prize{ color:var(--gold-bright); border-color:rgba(248,208,136,.42); background:rgba(176,120,32,.14); }
+.b.main{ color:#1A1206; font-weight:750; border-color:transparent;
+         background:linear-gradient(180deg,#F8DFA4,#D9A441 62%,#B98421); }
+.b.free{ color:var(--ok); border-color:rgba(105,212,143,.42); background:rgba(105,212,143,.12); }
+.b.live{ color:var(--ok); border-color:rgba(105,212,143,.5); background:rgba(105,212,143,.14); }
+.b.moved{ color:var(--warn); border-color:rgba(255,198,92,.42); background:rgba(255,198,92,.12); }
+/* the hero (Next Up) keeps its own roomier badge row — one card, not a list */
+.badges{ display:flex; flex-wrap:wrap; gap:.4rem; margin-top:.5rem; }
+
+.ev-chev{
+  font-size:1.1rem; color:var(--text-faint); transition:transform .18s;
+  width:1.4rem; text-align:center;
+}
+.ev-head[aria-expanded="true"] .ev-chev{ transform:rotate(180deg); color:var(--gold-bright); }
+
+.ev-body{ padding:0 clamp(.7rem,1.8vw,.95rem) clamp(.8rem,1.8vw,1.05rem);
+          border-top:1px solid var(--line); background:var(--bg-2); }
+.det{ display:grid; gap:.75rem 1.4rem; margin:1rem 0 0;
+      grid-template-columns:repeat(auto-fit,minmax(9.5rem,1fr)); }
+.det > div{ min-width:0; }
+.det dt{ font-size:max(16px,.78rem); letter-spacing:.11em; text-transform:uppercase; color:var(--text-faint); }
+.det dd{ margin:.2rem 0 0; font-size:1rem; font-weight:600; font-variant-numeric:tabular-nums; }
+
+.prz{ margin-top:1.1rem; padding-top:.95rem; border-top:1px dashed var(--line-strong); }
+.prz h4{
+  margin:0 0 .6rem; font-size:max(16px,.78rem); letter-spacing:.12em; text-transform:uppercase;
+  color:var(--gold-bright); font-weight:700;
+}
+.prz ul{ margin:0; padding:0; list-style:none; display:flex; flex-direction:column; gap:.5rem; }
+.prz li{ display:flex; gap:.7em; align-items:flex-start; font-size:max(16px,.96rem); }
+.prz li .k{
+  flex:0 0 auto; min-width:7.4rem; font-size:max(16px,.8rem); font-weight:700; letter-spacing:.05em;
+  text-transform:uppercase; color:var(--text-faint); padding-top:.15em;
+}
+.prz li .v{ color:var(--text); }
+.note{ margin-top:1rem; font-size:max(16px,.93rem); color:var(--text-dim); font-style:italic; }
+
+/* --------------------------------------------------------------- filters -- */
+.filters{ display:flex; flex-wrap:wrap; gap:.5rem; margin-bottom:1.3rem; }
+.chip{
+  min-height:var(--tap-sm); padding:0 1rem;
+  display:inline-flex; align-items:center; gap:.45em;
+  font-size:max(16px,.88rem); font-weight:600; color:var(--text-dim);
+  background:var(--surface); border:1px solid var(--line); border-radius:999px;
+  cursor:pointer; transition:background .15s,color .15s,border-color .15s;
+}
+.chip:hover{ color:var(--text); border-color:var(--line-strong); }
+.chip[aria-pressed="true"]{
+  color:var(--gold-pale); background:rgba(176,120,32,.2); border-color:rgba(248,208,136,.5);
+}
+
+/* --------------------------------------------------------------- weekly --- */
+.wk{ display:grid; gap:.9rem; grid-template-columns:repeat(auto-fit,minmax(min(100%,20rem),1fr)); }
+.wkday{ border:1px solid var(--line); border-radius:var(--r); background:var(--surface); overflow:hidden; }
+.wkday > h3{
+  padding:.8rem 1rem; font-size:max(16px,.88rem); letter-spacing:.13em; text-transform:uppercase;
+  background:var(--surface-2); border-bottom:1px solid var(--line); color:var(--text);
+}
+.wkday.is-today > h3{ color:#1A1206; background:linear-gradient(180deg,#F8DFA4,#D9A441); }
+.wkday ul{ margin:0; padding:.35rem; list-style:none; }
+.wkday li{
+  display:flex; justify-content:space-between; align-items:baseline; gap:.8rem;
+  padding:.7rem .75rem; border-radius:10px;
+}
+.wkday li + li{ border-top:1px solid var(--line); }
+.wkday .t{ font-weight:700; font-variant-numeric:tabular-nums; white-space:nowrap; }
+.wkday .n{ text-align:right; }
+.wkday .n b{ display:block; font-weight:600; font-size:max(16px,.98rem); }
+.wkday .n small{ font-size:max(16px,.82rem); color:var(--text-dim); }
+.wkday .empty{ padding:1rem .8rem; color:var(--text-faint); font-size:max(16px,.92rem); }
+.wkday li.is-past{ opacity:.5; }
+.wkday li.is-past .t, .wkday li.is-past .n b{ color:var(--text-faint); }
+.wkday li.is-next{
+  background:linear-gradient(90deg, rgba(176,120,32,.18), transparent 75%);
+  box-shadow:inset 3px 0 0 0 var(--gold-bright);
+  padding-left:.95rem;
+}
+.wkday li.is-next .t, .wkday li.is-next .n b{ color:var(--gold-bright); }
+.wkday li.is-next .n small{ color:var(--gold-bright); font-weight:600; }
+
+/* ------------------------------------------------------- the club — neon -- */
+/* Scoped to #p-clubs only, per the brand's neon sign mark — everywhere else
+   "club" content keeps the site's usual gold/surface theme. Overriding
+   --c-club here (rather than in :root) means every element that already
+   colours itself off that token — section headings, event accent borders,
+   badges — repaints pink/violet inside this tab without touching the
+   category colour used for club events shown in Next Up or All Events. */
+#p-clubs{ --c-club:var(--club-pink); }
+#p-clubs .sec-h h2{ text-shadow:var(--club-glow); }
+.club-hero-h{ flex-direction:column; align-items:center; justify-content:center; text-align:center; gap:.5rem; }
+.club-logo{ display:block; width:clamp(190px,32vw,320px); height:auto;
+            filter:drop-shadow(0 0 18px rgba(178,76,255,.35)); }
+#p-clubs .sec{
+  padding:clamp(1rem,3vw,1.6rem); border:1px solid rgba(255,111,216,.25); border-radius:var(--r-lg);
+  background:
+    radial-gradient(480px 220px at 8% -18%, rgba(178,76,255,.2), transparent 70%),
+    radial-gradient(480px 240px at 100% 0%, rgba(255,111,216,.16), transparent 72%),
+    var(--surface);
+}
+#p-clubs .sec .sec-h{ border-bottom-color:rgba(255,111,216,.22); }
+
+/* --------------------------------------------------------------- series --- */
+.ser{
+  border:1px solid var(--line); border-radius:var(--r-lg); background:var(--surface);
+  overflow:hidden; margin-bottom:1.1rem;
+  border-top:3px solid var(--accent,var(--gold-bright));
+}
+/* On the Highlights list, the whole card IS the button into that series'
+   full page — <button> only allows phrasing content, so its children below
+   (.ser-h etc.) are spans, not div/h3/p; the detail page keeps real
+   div/h2/p since there it's plain content, not a button's label. */
+button.ser-open{
+  appearance:none; -webkit-appearance:none;
+  display:block; width:100%; padding:0;
+  font:inherit; color:inherit; text-align:left; cursor:pointer;
+  transition:border-color .16s;
+}
+button.ser-open:hover{ border-color:var(--line-strong); }
+.ser-h{ display:block; padding:clamp(1rem,2.6vw,1.5rem); }
+.ser-h .top{ display:flex; align-items:center; gap:.7rem; flex-wrap:wrap; margin-bottom:.5rem; }
+.ser-h .tag{
+  font-size:max(16px,.78rem); font-weight:800; letter-spacing:.14em; padding:.3em .7em; border-radius:6px;
+  color:var(--accent,var(--gold-bright));
+  border:1px solid color-mix(in srgb,var(--accent,var(--gold-bright)) 45%,transparent);
+  background:color-mix(in srgb,var(--accent,var(--gold-bright)) 12%,transparent);
+}
+.ser-h h2, .ser-h .h3-like{ display:block; margin:0; font-size:clamp(1.25rem,3.8vw,1.75rem); font-weight:750; }
+.ser-h .range{ display:block; margin-top:.45rem; font-size:max(16px,.98rem); color:var(--text-dim); font-weight:600; }
+.ser-h .blurb{ display:block; margin-top:.7rem; font-size:max(16px,.98rem); color:var(--text-dim); max-width:60ch; }
+.ser-h .st{
+  display:inline-flex; align-items:center; gap:.5em; margin-top:.9rem;
+  font-size:max(16px,.86rem); font-weight:700; letter-spacing:.05em;
+  padding:.4em .85em; border-radius:999px;
+}
+.st.soon{ color:var(--gold-bright); background:rgba(176,120,32,.16); border:1px solid rgba(248,208,136,.34); }
+.st.now{ color:var(--ok); background:rgba(105,212,143,.13); border:1px solid rgba(105,212,143,.36); }
+.st.done{ color:var(--text-faint); background:var(--surface-2); border:1px solid var(--line); }
+
+/* A locked highlight has nothing to click into yet — muted instead of
+   accented, and a plain <div> (not a button) so it's inert. */
+.ser.is-locked{ border-top-color:var(--line-strong); opacity:.72; cursor:default; }
+.ser.is-locked .ser-h .tag{ color:var(--text-faint); border-color:var(--line-strong); background:var(--surface-2); }
+.ser.is-locked .h3-like{ color:var(--text-dim); }
+.ser.is-locked .lock{ font-size:1rem; }
+
+/* MPT — themed to the tour's own cyan-to-blue gradient mark instead of a
+   flat accent colour. Scoped to [data-theme="mpt"] rather than the "mpt"
+   id so any future series sharing that accent picks up the same look. */
+.ser[data-theme="mpt"]{ border-top-color:transparent; position:relative; }
+.ser[data-theme="mpt"]::before{
+  content:""; position:absolute; inset:0 0 auto 0; height:3px; background:var(--grad-mpt);
+}
+.ser[data-theme="mpt"] .ser-h .tag{
+  background:var(--grad-mpt); -webkit-background-clip:text; background-clip:text;
+  color:transparent; border-color:rgba(34,211,238,.45);
+}
+.hl-teaser[data-theme="mpt"] .ev-time b{
+  background:var(--grad-mpt); -webkit-background-clip:text; background-clip:text; color:transparent;
+}
+
+/* Spotlight Series — the site's own brand-gold gradient (same one used for
+   the page title) instead of a flat gold fill. */
+.ser[data-theme="gold"]{ border-top-color:transparent; position:relative; }
+.ser[data-theme="gold"]::before{
+  content:""; position:absolute; inset:0 0 auto 0; height:3px; background:var(--grad-gold);
+}
+.ser[data-theme="gold"] .ser-h .tag{
+  background:var(--grad-gold); -webkit-background-clip:text; background-clip:text;
+  color:transparent; border-color:rgba(248,208,136,.45);
+}
+.hl-teaser[data-theme="gold"] .ev-time b{
+  background:var(--grad-gold); -webkit-background-clip:text; background-clip:text; color:transparent;
+}
+/* List-card footer: status pill + a plain-text call to action, so the card
+   itself signals "tap me" without a second, separate toggle control. */
+.ser-foot{ display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap;
+           gap:.5rem 1rem; margin-top:.9rem; }
+.ser-foot .st{ margin-top:0; }
+.ser-cta{ display:inline-flex; align-items:center; gap:.35em;
+          font-size:max(16px,.88rem); font-weight:650; color:var(--text-dim); }
+.ser-cta .ev-chev{ width:auto; color:inherit; }
+/* The detail page's "back to the list" control — full tap target, same
+   pill language as a tab so it reads as real navigation, not a filter. */
+.hl-back{
+  display:inline-flex; align-items:center; gap:.5em; min-height:var(--tap);
+  padding:0 1.15rem; margin-bottom:1rem;
+  font-size:max(16px,.95rem); font-weight:650; color:var(--text-dim);
+  background:var(--surface); border:1px solid var(--line); border-radius:999px; cursor:pointer;
+}
+.hl-back:hover{ color:var(--text); border-color:var(--line-strong); }
+.hl-sched{ margin-top:clamp(20px,4vw,32px); }
+
+/* ---------------------------------------------------------------- empty --- */
+.empty-state{
+  padding:clamp(1.5rem,4vw,2.6rem); text-align:center;
+  border:1px dashed var(--line-strong); border-radius:var(--r-lg); background:var(--surface);
+}
+.empty-state .big{ font-size:1.15rem; font-weight:650; }
+.empty-state p{ margin-top:.6rem; color:var(--text-dim); font-size:max(16px,.98rem); }
+.empty-state .mark{ width:52px; height:52px; opacity:.34; margin:0 auto .9rem; display:block; }
+
+/* --------------------------------------------------------------- notices -- */
+.notice{
+  border-radius:var(--r); padding:1rem 1.15rem; margin:0 0 1.2rem;
+  font-size:max(16px,.96rem); line-height:1.5;
+}
+.notice.err{ color:#FFD9D6; background:rgba(255,123,114,.13); border:1px solid rgba(255,123,114,.42); }
+.notice.dbg{ color:var(--gold-pale); background:rgba(255,198,92,.1); border:1px solid rgba(255,198,92,.36); }
+.notice h3{ font-size:1rem; margin-bottom:.45rem; }
+.notice ul{ margin:.5rem 0 0; padding-left:1.3rem; }
+.notice code{ font-family:ui-monospace,Consolas,monospace; font-size:.9em;
+              background:rgba(0,0,0,.35); padding:.1em .4em; border-radius:4px; }
+
+/* ---------------------------------------------------------------- footer -- */
+footer.site{
+  border-top:1px solid var(--line); margin-top:clamp(24px,5vw,44px);
+  padding:clamp(20px,4vw,34px) 0 clamp(30px,6vw,50px);
+  font-size:max(16px,.9rem); color:var(--text-faint);
+}
+footer.site .row{ display:flex; gap:1rem 2rem; flex-wrap:wrap; justify-content:space-between; }
+footer.site b{ color:var(--text-dim); font-weight:600; }
+
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{ animation-duration:.001ms !important; animation-iteration-count:1 !important;
+                        transition-duration:.001ms !important; }
+}
+@media print{ .tabbar{ display:none; } .panel{ display:block !important; } }
+</style>
+</head>
+<body>
+
+<header class="site">
+  <div class="wrap">
+    <div class="brandrow">
+      <img class="logo" src="assets/logo.png" alt="Vegas Infinite" width="1120" height="173">
+    </div>
+    <h1 class="grad">Tournament Schedule</h1>
+    <div><span class="kicker">MTT Live Events</span></div>
+  </div>
+</header>
+
+<nav class="tabbar" aria-label="Schedule views">
+  <div class="tabs" id="tabs" role="tablist"></div>
+</nav>
+
+<main class="wrap" id="main">
+  <div id="notices" aria-live="polite"></div>
+  <div class="panel" id="p-next"      role="tabpanel" aria-labelledby="t-next"></div>
+  <div class="panel" id="p-today"     role="tabpanel" aria-labelledby="t-today" hidden></div>
+  <div class="panel" id="p-weekly"    role="tabpanel" aria-labelledby="t-weekly" hidden></div>
+  <div class="panel" id="p-clubs"     role="tabpanel" aria-labelledby="t-clubs" hidden></div>
+  <div class="panel" id="p-highlights" role="tabpanel" aria-labelledby="t-highlights" hidden></div>
+  <div class="panel" id="p-all"       role="tabpanel" aria-labelledby="t-all" hidden></div>
+</main>
+
+<footer class="site">
+  <div class="wrap row">
+    <span>Schedule last updated <b id="lastup">—</b></span>
+    <span>Times shown in <b id="footertz">—</b>. Schedule subject to change.</span>
+  </div>
+</footer>
+
+<!-- ---------------------------------------------------------------------------
+     FAILURE GUARD. Deliberately loaded BEFORE the app script so that it can
+     still report a *syntax* error in it. A missing comma or brace in the
+     schedule data stops the whole app script from parsing, which means its own
+     try/catch never runs — this is what covers that case.
+     ------------------------------------------------------------------------ -->
+<script>
+window.__VI_OK__  = false;
+window.__VI_ERR__ = null;
+window.addEventListener("error", function(ev){
+  if (!window.__VI_ERR__) window.__VI_ERR__ = (ev && ev.message) || String((ev && ev.error) || "");
+});
+window.__VI_FAIL__ = function(detail){
+  var e = function(s){ return String(s == null ? "" : s)
+    .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;"); };
+  var n = document.getElementById("notices");
+  if (n) n.innerHTML =
+    '<div class="notice err"><h3>The schedule could not be displayed</h3>' +
+    "<p>There is a problem in the schedule data, so this page could not load. " +
+    "Please let the events team know — the rest of the schedule is unaffected.</p>" +
+    (detail ? '<p style="margin-top:.7rem">Details for whoever maintains this page: ' +
+              "<code>" + e(detail) + "</code></p>" : "") +
+    '<p style="margin-top:.7rem">This is almost always a typo in the ' +
+    "<code>SCHEDULE DATA</code> block near the top of <code>index.html</code> — " +
+    "a missing comma, quote or bracket. Your browser console gives the exact line " +
+    "number; <code>?debug=1</code> gives a full data check.</p></div>";
+  var m = document.getElementById("main");
+  if (m){ var ps = m.querySelectorAll(".panel");
+          for (var i = 0; i < ps.length; i++) ps[i].hidden = true; }
+  var t = document.querySelector(".tabbar");
+  if (t) t.hidden = true;
+};
+</script>
+
+<script>
+"use strict";
+/* ==========================================================================
+ *
+ *   ############   SCHEDULE DATA — EDIT BELOW THIS LINE   ############
+ *
+ *   Everything a maintainer needs to change lives in this region.
+ *   Nothing below the "END OF SCHEDULE DATA" banner needs editing.
+ *
+ *   All times are 24-hour "HH:MM".
+ *   By default a time is UTC and is converted to each viewer's own local
+ *   time automatically. See the `tz` field note in WEEKLY below.
+ *
+ *   REMINDER: this file is published publicly. Anyone can read it with
+ *   View Source, comments included. Do not commit unannounced events,
+ *   embargoed dates, or unconfirmed prizing.
+ *
+ * ========================================================================== */
+
+const CONFIG = {
+  lastUpdated: "2026-09-03",   // shown in the footer so players know it's current
+  horizonDays: 35,             // how far ahead recurring weekly events are generated
+  liveGraceMins: 20            // how long an event stays flagged "Running now" after start
+};
+
+/* Speed presets. Add your own keys freely; the label is what players see. */
+const SPEEDS = {
+  regular: "Regular",
+  turbo:   "Turbo",
+  hyper:   "Hyper",
+  deep:    "Deep Stack",
+  bounty:  "Bounty"
+};
+
+/* Club membership tiers. The key is used by an event's `club` field
+   (WEEKLY) or a CLUB_SCHEDULE entry's `club` field. */
+const CLUBS = {
+  member: "Club",
+  plus:   "Club+"
+};
+
+/* --------------------------------------------------------------------------
+ * WEEKLY — the recurring ring. Define each tournament ONCE; the page
+ * generates its occurrences forward automatically.
+ *
+ *   id       unique string, referenced by OVERRIDES
+ *   day      0=Sun 1=Mon 2=Tue 3=Wed 4=Thu 5=Fri 6=Sat — OR "daily" for a
+ *            tournament that runs every night at the same time (see the
+ *            Nightly entries below) — OR an array of those numbers for a
+ *            tournament on a fixed subset of days (e.g. [1,3,5]).
+ *   time     "HH:MM"
+ *   tz       null  -> the time is UTC (event holds steady globally; a viewer's
+ *                     local time shifts by an hour across their DST change)
+ *            "America/New_York" -> the time is fixed in that region instead
+ *                     (holds steady locally there, moves in UTC across DST —
+ *                     this is what "ET" times in an operator's own schedule
+ *                     mean: always that clock time in New York)
+ *   rollover true when `time` is technically the first moment of the NEXT
+ *            calendar day (e.g. "12:00 AM" ending a Monday night) but the
+ *            event should still be grouped and named as part of `day` — the
+ *            real instant used for sorting/countdowns is unaffected, only
+ *            which day-card it's grouped under changes. Omit for anything
+ *            not scheduled exactly at midnight.
+ *   speed    a key from SPEEDS
+ *   stack    starting chip stack
+ *   buyIn    0 renders as "Freeroll"
+ *   category "weekly" or "club"
+ *   club     a key from CLUBS when category is "club", otherwise null
+ *   prizes   { participation, winner, extra } — each a string or null
+ * ------------------------------------------------------------------------ */
+const WEEKLY = [
+  /* ---- Monday through Sunday, 11:00 AM through midnight, all times ET ---- */
+  { id:"mon-warmup", name:"Monday Warmup", day:1, time:"11:00", tz:"America/New_York", speed:"turbo", stack:1000, buyIn:25000, currency:"Chips", category:"weekly", club:null, prizes:{ participation:null, winner:null, extra:null }, notes:"" },
+  { id:"mon-mill-sat", name:"Monday Million Satellite", day:1, time:"13:00", tz:"America/New_York", speed:"turbo", stack:1000, buyIn:100000, currency:"Chips", category:"weekly", club:null, prizes:{ participation:null, winner:null, extra:null }, notes:"" },
+  { id:"mon-mayhem", name:"Monday Mayhem", day:1, time:"15:00", tz:"America/New_York", speed:"turbo", stack:2000, buyIn:500000, currency:"Chips", category:"weekly", club:null, prizes:{ participation:null, winner:null, extra:null }, notes:"" },
+  { id:"mon-million", name:"Monday Million", day:1, time:"18:00", tz:"America/New_York", speed:"turbo", stack:2000, buyIn:1000000, currency:"Chips", category:"weekly", club:null, prizes:{ participation:null, winner:null, extra:null }, notes:"" },
+  { id:"mon-madness", name:"Monday Madness", day:1, time:"20:00", tz:"America/New_York", speed:"turbo", stack:1500, buyIn:300000, currency:"Chips", category:"weekly", club:null, prizes:{ participation:null, winner:null, extra:null }, notes:"" },
+  { id:"mon-latenight", name:"Monday Late Night", day:1, time:"22:00", tz:"America/New_York", speed:"turbo", stack:1500, buyIn:100000, currency:"Chips", category:"weekly", club:null, prizes:{ participation:null, winner:null, extra:null }, notes:"" },
+  { id:"mon-midnight", name:"Monday Midnight Million", day:1, time:"00:00", tz:"America/New_York", rollover:true, speed:"turbo", stack:1500, buyIn:1000000, currency:"Chips", category:"weekly", club:null, prizes:{ participation:null, winner:null, extra:null }, notes:"" },
+
+  { id:"tue-warmup", name:"Tuesday Warmup", day:2, time:"11:00", tz:"America/New_York", speed:"turbo", stack:1500, buyIn:200000, currency:"Chips", category:"weekly", club:null, prizes:{ participation:null, winner:null, extra:null }, notes:"" },
+  { id:"tue-million", name:"Tuesday Million", day:2, time:"13:00", tz:"America/New_York", speed:"turbo", stack:1500, buyIn:1000000, currency:"Chips", category:"weekly", club:null, prizes:{ participation:null, winner:null, extra:null }, notes:"" },
+  { id:"tue-hyper", name:"Tuesday Hyper", day:2, time:"15:00", tz:"America/New_York", speed:"hyper", stack:1500, buyIn:50000, currency:"Chips", category:"weekly", club:null, prizes:{ participation:null, winner:null, extra:null }, notes:"" },
+  { id:"tue-turbo", name:"Tuesday Turbo", day:2, time:"18:00", tz:"America/New_York", speed:"turbo", stack:1000, buyIn:100000, currency:"Chips", category:"weekly", club:null, prizes:{ participation:null, winner:null, extra:null }, notes:"" },
+  { id:"tue-takedown", name:"Tuesday Takedown", day:2, time:"20:00", tz:"America/New_York", speed:"turbo", stack:2500, buyIn:2000000, currency:"Chips", category:"weekly", club:null, prizes:{ participation:null, winner:null, extra:null }, notes:"" },
+  { id:"tue-latenight", name:"Tuesday Late Night", day:2, time:"22:00", tz:"America/New_York", speed:"turbo", stack:1500, buyIn:100000, currency:"Chips", category:"weekly", club:null, prizes:{ participation:null, winner:null, extra:null }, notes:"" },
+  { id:"tue-midnight", name:"Tuesday Midnight Million", day:2, time:"00:00", tz:"America/New_York", rollover:true, speed:"turbo", stack:1500, buyIn:1000000, currency:"Chips", category:"weekly", club:null, prizes:{ participation:null, winner:null, extra:null }, notes:"" },
+
+  { id:"wed-warmup", name:"Wednesday Warmup", day:3, time:"11:00", tz:"America/New_York", speed:"turbo", stack:1500, buyIn:100000, currency:"Chips", category:"weekly", club:null, prizes:{ participation:null, winner:null, extra:null }, notes:"" },
+  { id:"wed-deep", name:"Wednesday Deepstack", day:3, time:"13:00", tz:"America/New_York", speed:"turbo", stack:3000, buyIn:300000, currency:"Chips", category:"weekly", club:null, prizes:{ participation:null, winner:null, extra:null }, notes:"" },
+  { id:"wed-wild", name:"Wild Wednesday", day:3, time:"15:00", tz:"America/New_York", speed:"turbo", stack:1500, buyIn:750000, currency:"Chips", category:"weekly", club:null, prizes:{ participation:null, winner:null, extra:null }, notes:"" },
+  { id:"mms-wed", name:"Midnight Million Satellite", day:3, time:"18:00", tz:"America/New_York", speed:"turbo", stack:1000, buyIn:100000, currency:"Chips", category:"weekly", club:null, prizes:{ participation:null, winner:null, extra:null }, notes:"" },
+  { id:"wed-welcome", name:"Wednesday Welcome", day:3, time:"20:00", tz:"America/New_York", speed:"hyper", stack:1000, buyIn:10000, currency:"Chips", category:"weekly", club:null, prizes:{ participation:null, winner:null, extra:null }, notes:"" },
+  { id:"wed-latenight", name:"Wednesday Late Night", day:3, time:"22:00", tz:"America/New_York", speed:"turbo", stack:1500, buyIn:500000, currency:"Chips", category:"weekly", club:null, prizes:{ participation:null, winner:null, extra:null }, notes:"" },
+  { id:"wed-midnight", name:"Wednesday Midnight Million", day:3, time:"00:00", tz:"America/New_York", rollover:true, speed:"turbo", stack:1500, buyIn:1000000, currency:"Chips", category:"weekly", club:null, prizes:{ participation:null, winner:null, extra:null }, notes:"" },
+
+  { id:"thu-warmup", name:"Thursday Warmup", day:4, time:"11:00", tz:"America/New_York", speed:"turbo", stack:1500, buyIn:25000, currency:"Chips", category:"weekly", club:null, prizes:{ participation:null, winner:null, extra:null }, notes:"" },
+  { id:"thu-deep", name:"Thursday Deepstack", day:4, time:"13:00", tz:"America/New_York", speed:"turbo", stack:3000, buyIn:300000, currency:"Chips", category:"weekly", club:null, prizes:{ participation:null, winner:null, extra:null }, notes:"" },
+  { id:"mms-thu", name:"Midnight Million Satellite", day:4, time:"15:00", tz:"America/New_York", speed:"turbo", stack:1000, buyIn:100000, currency:"Chips", category:"weekly", club:null, prizes:{ participation:null, winner:null, extra:null }, notes:"" },
+  { id:"thu-highroller", name:"Thursday Highroller", day:4, time:"18:00", tz:"America/New_York", speed:"regular", stack:3000, buyIn:5000000, currency:"Chips", category:"weekly", club:null, prizes:{ participation:null, winner:null, extra:null }, notes:"" },
+  { id:"thu-madness", name:"Thursday Madness", day:4, time:"20:00", tz:"America/New_York", speed:"turbo", stack:1500, buyIn:500000, currency:"Chips", category:"weekly", club:null, prizes:{ participation:null, winner:null, extra:null }, notes:"" },
+  { id:"thu-latenight", name:"Thursday Late Night", day:4, time:"22:00", tz:"America/New_York", speed:"turbo", stack:1500, buyIn:100000, currency:"Chips", category:"weekly", club:null, prizes:{ participation:null, winner:null, extra:null }, notes:"" },
+  { id:"thu-midnight", name:"Thursday Midnight Million", day:4, time:"00:00", tz:"America/New_York", rollover:true, speed:"turbo", stack:1500, buyIn:1000000, currency:"Chips", category:"weekly", club:null, prizes:{ participation:null, winner:null, extra:null }, notes:"" },
+
+  { id:"fri-warmup", name:"Friday Warmup", day:5, time:"11:00", tz:"America/New_York", speed:"turbo", stack:1500, buyIn:100000, currency:"Chips", category:"weekly", club:null, prizes:{ participation:null, winner:null, extra:null }, notes:"" },
+  { id:"fri-million", name:"Friday Million", day:5, time:"13:00", tz:"America/New_York", speed:"turbo", stack:2000, buyIn:1000000, currency:"Chips", category:"weekly", club:null, prizes:{ participation:null, winner:null, extra:null }, notes:"" },
+  { id:"fri-hyper", name:"Friday Hyper", day:5, time:"15:00", tz:"America/New_York", speed:"hyper", stack:1500, buyIn:50000, currency:"Chips", category:"weekly", club:null, prizes:{ participation:null, winner:null, extra:null }, notes:"" },
+  { id:"mms-fri", name:"Midnight Million Satellite", day:5, time:"18:00", tz:"America/New_York", speed:"turbo", stack:1000, buyIn:100000, currency:"Chips", category:"weekly", club:null, prizes:{ participation:null, winner:null, extra:null }, notes:"" },
+  { id:"fri-feast", name:"Friday Feast", day:5, time:"20:00", tz:"America/New_York", speed:"turbo", stack:2500, buyIn:2500000, currency:"Chips", category:"weekly", club:null, prizes:{ participation:null, winner:null, extra:null }, notes:"" },
+  { id:"fri-latenight", name:"Late Night Friday", day:5, time:"22:00", tz:"America/New_York", speed:"turbo", stack:1500, buyIn:100000, currency:"Chips", category:"weekly", club:null, prizes:{ participation:null, winner:null, extra:null }, notes:"" },
+  { id:"fri-midnight", name:"Friday Midnight Million", day:5, time:"00:00", tz:"America/New_York", rollover:true, speed:"turbo", stack:1500, buyIn:1000000, currency:"Chips", category:"weekly", club:null, prizes:{ participation:null, winner:null, extra:null }, notes:"" },
+
+  { id:"sat-sunrise", name:"Saturday Sunrise", day:6, time:"11:00", tz:"America/New_York", speed:"turbo", stack:1500, buyIn:200000, currency:"Chips", category:"weekly", club:null, prizes:{ participation:null, winner:null, extra:null }, notes:"" },
+  { id:"sat-freeroll", name:"Saturday Freeroll", day:6, time:"13:00", tz:"America/New_York", speed:"hyper", stack:500, buyIn:0, currency:"Chips", category:"weekly", club:null, prizes:{ participation:null, winner:null, extra:null }, notes:"" },
+  { id:"sat-splash", name:"Saturday Splash", day:6, time:"15:00", tz:"America/New_York", speed:"turbo", stack:1500, buyIn:25000, currency:"Chips", category:"weekly", club:null, prizes:{ participation:null, winner:null, extra:null }, notes:"" },
+  { id:"mms-sat", name:"Midnight Million Satellite", day:6, time:"18:00", tz:"America/New_York", speed:"turbo", stack:1000, buyIn:100000, currency:"Chips", category:"weekly", club:null, prizes:{ participation:null, winner:null, extra:null }, notes:"" },
+  { id:"sat-highroller", name:"Saturday High Roller", day:6, time:"20:00", tz:"America/New_York", speed:"regular", stack:4000, buyIn:5000000, currency:"Chips", category:"weekly", club:null, prizes:{ participation:null, winner:null, extra:null }, notes:"" },
+  { id:"sat-latenight", name:"Saturday Late Night", day:6, time:"22:00", tz:"America/New_York", speed:"turbo", stack:1500, buyIn:100000, currency:"Chips", category:"weekly", club:null, prizes:{ participation:null, winner:null, extra:null }, notes:"" },
+  { id:"sat-midnight", name:"Saturday Midnight Million", day:6, time:"00:00", tz:"America/New_York", rollover:true, speed:"turbo", stack:1500, buyIn:1000000, currency:"Chips", category:"weekly", club:null, prizes:{ participation:null, winner:null, extra:null }, notes:"" },
+
+  { id:"sun-warmup", name:"Sunday Warmup", day:0, time:"11:00", tz:"America/New_York", speed:"turbo", stack:1500, buyIn:300000, currency:"Chips", category:"weekly", club:null, prizes:{ participation:null, winner:null, extra:null }, notes:"" },
+  { id:"sun-kickoff", name:"Sunday Kickoff", day:0, time:"13:00", tz:"America/New_York", speed:"turbo", stack:1000, buyIn:50000, currency:"Chips", category:"weekly", club:null, prizes:{ participation:null, winner:null, extra:null }, notes:"" },
+  { id:"sun-million", name:"Sunday Million", day:0, time:"15:00", tz:"America/New_York", speed:"turbo", stack:3000, buyIn:1000000, currency:"Chips", category:"weekly", club:null, prizes:{ participation:null, winner:"Sunday Million Badge", extra:null }, notes:"" },
+  { id:"mms-sun", name:"Midnight Million Satellite", day:0, time:"18:00", tz:"America/New_York", speed:"turbo", stack:1500, buyIn:100000, currency:"Chips", category:"weekly", club:null, prizes:{ participation:null, winner:null, extra:null }, notes:"" },
+  { id:"sun-shr", name:"Sunday Super High Roller", day:0, time:"20:00", tz:"America/New_York", speed:"regular", stack:4000, buyIn:10000000, currency:"Chips", category:"weekly", club:null, prizes:{ participation:null, winner:null, extra:null }, notes:"" },
+  { id:"sun-latenight", name:"Sunday Late Night", day:0, time:"22:00", tz:"America/New_York", speed:"turbo", stack:1500, buyIn:750000, currency:"Chips", category:"weekly", club:null, prizes:{ participation:null, winner:null, extra:null }, notes:"" },
+  { id:"sun-midnight", name:"Sunday Midnight Million", day:0, time:"00:00", tz:"America/New_York", rollover:true, speed:"turbo", stack:1500, buyIn:1000000, currency:"Chips", category:"weekly", club:null, prizes:{ participation:null, winner:null, extra:null }, notes:"" },
+
+  /* ---- Nightly — runs every night at the same ET time ---- */
+  { id:"nightly-eclipse", name:"Nightly Eclipse", day:"daily", time:"02:00", tz:"America/New_York", speed:"turbo", stack:1000, buyIn:500000, currency:"Chips", category:"weekly", club:null, prizes:{ participation:null, winner:null, extra:null }, notes:"Runs every night, same time, seven days a week." },
+  { id:"nightly-freeroll", name:"Nightly Nocturnal Freeroll [1M GTD]", day:"daily", time:"03:00", tz:"America/New_York", speed:"hyper", stack:1000, buyIn:0, currency:"Chips", category:"weekly", club:null, prizes:{ participation:null, winner:null, extra:null }, notes:"Runs every night, same time, seven days a week." },
+  { id:"nightly-nightowl", name:"Nightly Night Owl", day:"daily", time:"04:00", tz:"America/New_York", speed:"turbo", stack:500, buyIn:25000, currency:"Chips", category:"weekly", club:null, prizes:{ participation:null, winner:null, extra:null }, notes:"Runs every night, same time, seven days a week." },
+  { id:"nightly-twilight", name:"Nightly Twilight", day:"daily", time:"06:00", tz:"America/New_York", speed:"hyper", stack:1000, buyIn:10000, currency:"Chips", category:"weekly", club:null, prizes:{ participation:null, winner:null, extra:null }, notes:"Runs every night, same time, seven days a week." },
+  { id:"nightly-dawn", name:"Nightly Dawn", day:"daily", time:"08:00", tz:"America/New_York", speed:"turbo", stack:1500, buyIn:100000, currency:"Chips", category:"weekly", club:null, prizes:{ participation:null, winner:null, extra:null }, notes:"Runs every night, same time, seven days a week." },
+];
+
+/* --------------------------------------------------------------------------
+ * CLUB SCHEDULE — the real Club / Club+ freeroll calendar. Unlike WEEKLY,
+ * each of these runs once on its own date — day of week, time and prize
+ * pool all vary month to month, which the fixed weekly-recurrence engine
+ * can't express — so they're listed individually instead.
+ *
+ *   date       "YYYY-MM-DD"
+ *   time       "HH:MM", always America/New_York (how these are announced)
+ *   club       a key from CLUBS — which membership tier this is exclusive to
+ *   prizePool  total guaranteed chips, shown as this event's headline number
+ *
+ * All of these are 1,000-chip turbo freerolls (buy-in 0), so those fields
+ * aren't repeated per row below.
+ * ------------------------------------------------------------------------ */
+const CLUB_SCHEDULE = [
+  { date:"2026-09-02", time:"19:00", club:"plus",   prizePool:20000000 },
+  { date:"2026-09-05", time:"19:00", club:"member", prizePool:10000000 },
+  { date:"2026-09-06", time:"17:00", club:"member", prizePool:5000000 },
+  { date:"2026-09-07", time:"19:00", club:"member", prizePool:10000000 },
+  { date:"2026-09-09", time:"19:00", club:"member", prizePool:10000000 },
+  { date:"2026-09-12", time:"13:00", club:"plus",   prizePool:10000000 },
+  { date:"2026-09-13", time:"19:00", club:"member", prizePool:10000000 },
+  { date:"2026-09-16", time:"19:00", club:"member", prizePool:5000000 },
+  { date:"2026-09-19", time:"21:00", club:"member", prizePool:10000000 },
+  { date:"2026-09-20", time:"19:00", club:"plus",   prizePool:10000000 },
+  { date:"2026-09-23", time:"19:00", club:"member", prizePool:10000000 },
+  { date:"2026-09-26", time:"17:00", club:"member", prizePool:10000000 },
+  { date:"2026-09-27", time:"19:00", club:"member", prizePool:10000000 },
+  { date:"2026-09-30", time:"19:00", club:"plus",   prizePool:20000000 }
+];
+
+/* --------------------------------------------------------------------------
+ * SERIES — highlight events (MPT, Award Show, Halloween, etc.)
+ *
+ *   accent   "gold" | "orange" | "violet" | "teal"  (see theme tokens)
+ *   start/end   "YYYY-MM-DD", used for the date range and live/upcoming state
+ *   events   each needs an explicit `date`; other fields match WEEKLY
+ * ------------------------------------------------------------------------ */
+const SERIES = [
+  {
+    id:"mpt-2026-09", name:"Metaverse Poker Tour - Macau 2050", short:"MPT", accent:"mpt",
+    start:"2026-09-24", end:"2026-09-28",
+    blurb:"MPT Season 6, Stop 1 — Macau 2050. Sixty-three events over four days, from hyper " +
+          "freerolls to the 100M Guaranteed freeroll, the Main Event and the Ultra High Roller.",
+    events:[
+      { name:"Metaverse Poker Tour Event #1", date:"2026-09-24", time:"14:00", tz:"America/New_York", speed:"hyper", stack:500, buyIn:25000, currency:"Chips", prizes:{ participation:null, winner:"MPT S6 Winner's Ring", extra:null }, notes:"" },
+      { name:"Metaverse Poker Tour Event #2", date:"2026-09-24", time:"15:00", tz:"America/New_York", speed:"turbo", stack:1000, buyIn:100000, currency:"Chips", prizes:{ participation:null, winner:"MPT S6 Winner's Ring", extra:null }, notes:"" },
+      { name:"Metaverse Poker Tour Event #3", date:"2026-09-24", time:"16:00", tz:"America/New_York", speed:"turbo", stack:1500, buyIn:1000000, currency:"Chips", prizes:{ participation:null, winner:"MPT S6 Winner's Ring", extra:null }, notes:"" },
+      { name:"Metaverse Poker Tour Event #4", date:"2026-09-24", time:"17:00", tz:"America/New_York", speed:"turbo", stack:1000, buyIn:200000, currency:"Chips", prizes:{ participation:null, winner:"MPT S6 Winner's Ring", extra:null }, notes:"" },
+      { name:"Metaverse Poker Tour Event #5", date:"2026-09-24", time:"18:00", tz:"America/New_York", speed:"turbo", stack:2000, buyIn:500000, currency:"Chips", prizes:{ participation:null, winner:"MPT S6 Winner's Ring", extra:null }, notes:"" },
+      { name:"Metaverse Poker Tour Event #6", date:"2026-09-24", time:"19:00", tz:"America/New_York", speed:"turbo", stack:1000, buyIn:50000, currency:"Chips", prizes:{ participation:null, winner:"MPT S6 Winner's Ring", extra:null }, notes:"" },
+      { name:"Metaverse Poker Tour Event #7", date:"2026-09-24", time:"20:00", tz:"America/New_York", speed:"regular", stack:2500, buyIn:5000000, currency:"Chips", prizes:{ participation:null, winner:"MPT S6 Winner's Ring", extra:null }, notes:"" },
+      { name:"Metaverse Poker Tour Event #8", date:"2026-09-24", time:"20:30", tz:"America/New_York", speed:"hyper", stack:500, buyIn:5000, currency:"Chips", prizes:{ participation:null, winner:"MPT S6 Winner's Ring", extra:null }, notes:"" },
+      { name:"Metaverse Poker Tour Event #9", date:"2026-09-24", time:"21:00", tz:"America/New_York", speed:"turbo", stack:1500, buyIn:1000000, currency:"Chips", prizes:{ participation:null, winner:"MPT S6 Winner's Ring", extra:null }, notes:"" },
+      { name:"Metaverse Poker Tour Event #10", date:"2026-09-24", time:"21:30", tz:"America/New_York", speed:"hyper", stack:500, buyIn:10000, currency:"Chips", prizes:{ participation:null, winner:"MPT S6 Winner's Ring", extra:null }, notes:"" },
+      { name:"Metaverse Poker Tour Event #11", date:"2026-09-24", time:"22:00", tz:"America/New_York", speed:"turbo", stack:1500, buyIn:300000, currency:"Chips", prizes:{ participation:null, winner:"MPT S6 Winner's Ring", extra:null }, notes:"" },
+      { name:"Metaverse Poker Tour Event #12", date:"2026-09-24", time:"22:30", tz:"America/New_York", speed:"hyper", stack:1000, buyIn:25000, currency:"Chips", prizes:{ participation:null, winner:"MPT S6 Winner's Ring", extra:null }, notes:"" },
+      { name:"Metaverse Poker Tour Event #13", date:"2026-09-24", time:"23:00", tz:"America/New_York", speed:"turbo", stack:1500, buyIn:1000000, currency:"Chips", prizes:{ participation:null, winner:"MPT S6 Winner's Ring", extra:null }, notes:"" },
+      { name:"Metaverse Poker Tour Event #14", date:"2026-09-24", time:"23:30", tz:"America/New_York", speed:"hyper", stack:500, buyIn:10000, currency:"Chips", prizes:{ participation:null, winner:"MPT S6 Winner's Ring", extra:null }, notes:"" },
+      { name:"Metaverse Poker Tour Event #15", date:"2026-09-25", time:"00:00", groupDate:"2026-09-24", tz:"America/New_York", speed:"turbo", stack:1000, buyIn:100000, currency:"Chips", prizes:{ participation:null, winner:"MPT S6 Winner's Ring", extra:null }, notes:"" },
+      { name:"Metaverse Poker Tour Event #16", date:"2026-09-25", time:"11:00", tz:"America/New_York", speed:"hyper", stack:500, buyIn:25000, currency:"Chips", prizes:{ participation:null, winner:"MPT S6 Winner's Ring", extra:null }, notes:"" },
+      { name:"Metaverse Poker Tour Event #17", date:"2026-09-25", time:"12:00", tz:"America/New_York", speed:"turbo", stack:1000, buyIn:100000, currency:"Chips", prizes:{ participation:null, winner:"MPT S6 Winner's Ring", extra:null }, notes:"" },
+      { name:"Metaverse Poker Tour Event #18", date:"2026-09-25", time:"13:00", tz:"America/New_York", speed:"turbo", stack:1500, buyIn:1000000, currency:"Chips", prizes:{ participation:null, winner:"MPT S6 Winner's Ring", extra:null }, notes:"" },
+      { name:"Metaverse Poker Tour Event #19", date:"2026-09-25", time:"14:00", tz:"America/New_York", speed:"turbo", stack:1000, buyIn:100000, currency:"Chips", prizes:{ participation:null, winner:"MPT S6 Winner's Ring", extra:null }, notes:"" },
+      { name:"Metaverse Poker Tour Event #20", date:"2026-09-25", time:"15:00", tz:"America/New_York", speed:"regular", stack:2500, buyIn:5000000, currency:"Chips", prizes:{ participation:null, winner:"MPT S6 Winner's Ring", extra:null }, notes:"" },
+      { name:"Metaverse Poker Tour Event #21 - Freeroll", date:"2026-09-25", time:"16:00", tz:"America/New_York", speed:"hyper", stack:1000, buyIn:0, currency:"Chips", prizePool:100000000, prizes:{ participation:null, winner:"MPT S6 Winner's Ring", extra:null }, notes:"100M Guaranteed prize pool" },
+      { name:"Metaverse Poker Tour Event #22", date:"2026-09-25", time:"17:00", tz:"America/New_York", speed:"turbo", stack:1000, buyIn:50000, currency:"Chips", prizes:{ participation:null, winner:"MPT S6 Winner's Ring", extra:null }, notes:"" },
+      { name:"Metaverse Poker Tour Event #23", date:"2026-09-25", time:"18:00", tz:"America/New_York", speed:"turbo", stack:1500, buyIn:200000, currency:"Chips", prizes:{ participation:null, winner:"MPT S6 Winner's Ring", extra:null }, notes:"" },
+      { name:"Metaverse Poker Tour Event #24 - Mini Main Event", date:"2026-09-25", time:"19:00", tz:"America/New_York", speed:"regular", stack:3000, buyIn:1000000, currency:"Chips", prizes:{ participation:"Macau Cardback, Macau Neon Shades", winner:"Mini Main Event Bracelet", extra:null }, notes:"" },
+      { name:"Metaverse Poker Tour Event #25", date:"2026-09-25", time:"20:00", tz:"America/New_York", speed:"turbo", stack:1500, buyIn:500000, currency:"Chips", prizes:{ participation:null, winner:"MPT S6 Winner's Ring", extra:null }, notes:"" },
+      { name:"Metaverse Poker Tour Event #26", date:"2026-09-25", time:"20:30", tz:"America/New_York", speed:"turbo", stack:1000, buyIn:100000, currency:"Chips", prizes:{ participation:null, winner:"MPT S6 Winner's Ring", extra:null }, notes:"" },
+      { name:"Metaverse Poker Tour Event #27", date:"2026-09-25", time:"21:00", tz:"America/New_York", speed:"hyper", stack:500, buyIn:5000, currency:"Chips", prizes:{ participation:null, winner:"MPT S6 Winner's Ring", extra:null }, notes:"" },
+      { name:"Metaverse Poker Tour Event #28 - 6-max", date:"2026-09-25", time:"22:00", tz:"America/New_York", speed:"turbo", stack:1500, buyIn:1000000, currency:"Chips", prizes:{ participation:null, winner:"MPT S6 Winner's Ring", extra:null }, notes:"6-max" },
+      { name:"Metaverse Poker Tour Event #29", date:"2026-09-25", time:"23:00", tz:"America/New_York", speed:"turbo", stack:1500, buyIn:250000, currency:"Chips", prizes:{ participation:null, winner:"MPT S6 Winner's Ring", extra:null }, notes:"" },
+      { name:"Metaverse Poker Tour Event #30", date:"2026-09-26", time:"00:00", groupDate:"2026-09-25", tz:"America/New_York", speed:"hyper", stack:500, buyIn:10000, currency:"Chips", prizes:{ participation:null, winner:"MPT S6 Winner's Ring", extra:null }, notes:"" },
+      { name:"Metaverse Poker Tour Event #31", date:"2026-09-26", time:"01:00", groupDate:"2026-09-25", tz:"America/New_York", speed:"turbo", stack:1500, buyIn:2000000, currency:"Chips", prizes:{ participation:null, winner:"MPT S6 Winner's Ring", extra:null }, notes:"" },
+      { name:"Metaverse Poker Tour Event #32", date:"2026-09-26", time:"11:00", tz:"America/New_York", speed:"turbo", stack:1000, buyIn:100000, currency:"Chips", prizes:{ participation:null, winner:"MPT S6 Winner's Ring", extra:null }, notes:"" },
+      { name:"Metaverse Poker Tour Event #33", date:"2026-09-26", time:"12:00", tz:"America/New_York", speed:"hyper", stack:1000, buyIn:50000, currency:"Chips", prizes:{ participation:null, winner:"MPT S6 Winner's Ring", extra:null }, notes:"" },
+      { name:"Metaverse Poker Tour Event #34", date:"2026-09-26", time:"13:00", tz:"America/New_York", speed:"turbo", stack:1500, buyIn:100000, currency:"Chips", prizes:{ participation:null, winner:"MPT S6 Winner's Ring", extra:null }, notes:"" },
+      { name:"Metaverse Poker Tour Event #35", date:"2026-09-26", time:"14:00", tz:"America/New_York", speed:"hyper", stack:500, buyIn:25000, currency:"Chips", prizes:{ participation:null, winner:"MPT S6 Winner's Ring", extra:null }, notes:"" },
+      { name:"Metaverse Poker Tour Event #36", date:"2026-09-26", time:"15:00", tz:"America/New_York", speed:"turbo", stack:1500, buyIn:500000, currency:"Chips", prizes:{ participation:null, winner:"MPT S6 Winner's Ring", extra:null }, notes:"" },
+      { name:"Metaverse Poker Tour Event #37", date:"2026-09-26", time:"16:00", tz:"America/New_York", speed:"turbo", stack:1000, buyIn:100000, currency:"Chips", prizes:{ participation:null, winner:"MPT S6 Winner's Ring", extra:null }, notes:"" },
+      { name:"Metaverse Poker Tour Event #38 - Main Event", date:"2026-09-26", time:"17:00", tz:"America/New_York", speed:"regular", stack:5000, buyIn:5000000, currency:"Chips", prizes:{ participation:"Macau Cardback, Macau Neon Shades", winner:"Main Event Bracelet", extra:null }, notes:"" },
+      { name:"Metaverse Poker Tour Event #39", date:"2026-09-26", time:"18:00", tz:"America/New_York", speed:"hyper", stack:1500, buyIn:250000, currency:"Chips", prizes:{ participation:null, winner:"MPT S6 Winner's Ring", extra:null }, notes:"" },
+      { name:"Metaverse Poker Tour Event #40", date:"2026-09-26", time:"19:00", tz:"America/New_York", speed:"turbo", stack:1000, buyIn:50000, currency:"Chips", prizes:{ participation:null, winner:"MPT S6 Winner's Ring", extra:null }, notes:"" },
+      { name:"Metaverse Poker Tour Event #41", date:"2026-09-26", time:"20:00", tz:"America/New_York", speed:"turbo", stack:2000, buyIn:1000000, currency:"Chips", prizes:{ participation:null, winner:"MPT S6 Winner's Ring", extra:null }, notes:"" },
+      { name:"Metaverse Poker Tour Event #42", date:"2026-09-26", time:"20:30", tz:"America/New_York", speed:"hyper", stack:500, buyIn:25000, currency:"Chips", prizes:{ participation:null, winner:"MPT S6 Winner's Ring", extra:null }, notes:"" },
+      { name:"Metaverse Poker Tour Event #43", date:"2026-09-26", time:"21:00", tz:"America/New_York", speed:"regular", stack:2500, buyIn:5000000, currency:"Chips", prizes:{ participation:null, winner:"MPT S6 Winner's Ring", extra:null }, notes:"" },
+      { name:"Metaverse Poker Tour Event #44", date:"2026-09-26", time:"22:00", tz:"America/New_York", speed:"turbo", stack:1000, buyIn:300000, currency:"Chips", prizes:{ participation:null, winner:"MPT S6 Winner's Ring", extra:null }, notes:"" },
+      { name:"Metaverse Poker Tour Event #45", date:"2026-09-26", time:"23:00", tz:"America/New_York", speed:"hyper", stack:1500, buyIn:50000, currency:"Chips", prizes:{ participation:null, winner:"MPT S6 Winner's Ring", extra:null }, notes:"" },
+      { name:"Metaverse Poker Tour Event #46 - High Roller", date:"2026-09-27", time:"00:00", groupDate:"2026-09-26", tz:"America/New_York", speed:"regular", stack:3000, buyIn:25000000, currency:"Chips", prizes:{ participation:null, winner:"MPT S6 Winner's Ring", extra:null }, notes:"Non-bracelet high roller event" },
+      { name:"Metaverse Poker Tour Event #47", date:"2026-09-27", time:"01:00", groupDate:"2026-09-26", tz:"America/New_York", speed:"hyper", stack:500, buyIn:10000, currency:"Chips", prizes:{ participation:null, winner:"MPT S6 Winner's Ring", extra:null }, notes:"" },
+      { name:"Metaverse Poker Tour Event #48", date:"2026-09-27", time:"11:00", tz:"America/New_York", speed:"turbo", stack:1000, buyIn:100000, currency:"Chips", prizes:{ participation:null, winner:"MPT S6 Winner's Ring", extra:null }, notes:"" },
+      { name:"Metaverse Poker Tour Event #49", date:"2026-09-27", time:"12:00", tz:"America/New_York", speed:"turbo", stack:1000, buyIn:50000, currency:"Chips", prizes:{ participation:null, winner:"MPT S6 Winner's Ring", extra:null }, notes:"" },
+      { name:"Metaverse Poker Tour Event #50", date:"2026-09-27", time:"13:00", tz:"America/New_York", speed:"hyper", stack:1500, buyIn:250000, currency:"Chips", prizes:{ participation:null, winner:"MPT S6 Winner's Ring", extra:null }, notes:"" },
+      { name:"Metaverse Poker Tour Event #51", date:"2026-09-27", time:"14:00", tz:"America/New_York", speed:"turbo", stack:1000, buyIn:50000, currency:"Chips", prizes:{ participation:null, winner:"MPT S6 Winner's Ring", extra:null }, notes:"" },
+      { name:"Metaverse Poker Tour Event #52", date:"2026-09-27", time:"15:00", tz:"America/New_York", speed:"turbo", stack:1500, buyIn:300000, currency:"Chips", prizes:{ participation:null, winner:"MPT S6 Winner's Ring", extra:null }, notes:"" },
+      { name:"Metaverse Poker Tour Event #53 - Ultra High Roller", date:"2026-09-27", time:"16:00", tz:"America/New_York", tags:["main"], speed:"regular", stack:10000, buyIn:100000000, currency:"Chips", prizes:{ participation:"Macau Cardback, Macau Neon Shades, Dragon Spirit Gong, Bi Xi Trinket", winner:"Ultra High Roller Bracelet", extra:null }, notes:"" },
+      { name:"Metaverse Poker Tour Event #54 - Deepstack", date:"2026-09-27", time:"17:00", tz:"America/New_York", speed:"regular", stack:3000, buyIn:5000000, currency:"Chips", prizes:{ participation:null, winner:"MPT S6 Winner's Ring", extra:null }, notes:"" },
+      { name:"Metaverse Poker Tour Event #55", date:"2026-09-27", time:"18:00", tz:"America/New_York", speed:"turbo", stack:1500, buyIn:100000, currency:"Chips", prizes:{ participation:null, winner:"MPT S6 Winner's Ring", extra:null }, notes:"" },
+      { name:"Metaverse Poker Tour Event #56", date:"2026-09-27", time:"19:00", tz:"America/New_York", speed:"turbo", stack:1500, buyIn:750000, currency:"Chips", prizes:{ participation:null, winner:"MPT S6 Winner's Ring", extra:null }, notes:"" },
+      { name:"Metaverse Poker Tour Event #57 - Deepstack", date:"2026-09-27", time:"20:00", tz:"America/New_York", speed:"regular", stack:3000, buyIn:5000000, currency:"Chips", prizes:{ participation:null, winner:"MPT S6 Winner's Ring", extra:null }, notes:"" },
+      { name:"Metaverse Poker Tour Event #58", date:"2026-09-27", time:"20:30", tz:"America/New_York", speed:"turbo", stack:1000, buyIn:100000, currency:"Chips", prizes:{ participation:null, winner:"MPT S6 Winner's Ring", extra:null }, notes:"" },
+      { name:"Metaverse Poker Tour Event #59", date:"2026-09-27", time:"21:00", tz:"America/New_York", speed:"hyper", stack:500, buyIn:5000, currency:"Chips", prizes:{ participation:null, winner:"MPT S6 Winner's Ring", extra:null }, notes:"" },
+      { name:"Metaverse Poker Tour Event #60 - 6-max", date:"2026-09-27", time:"22:00", tz:"America/New_York", speed:"turbo", stack:1500, buyIn:1000000, currency:"Chips", prizes:{ participation:null, winner:"MPT S6 Winner's Ring", extra:null }, notes:"6-max" },
+      { name:"Metaverse Poker Tour Event #61", date:"2026-09-27", time:"23:00", tz:"America/New_York", speed:"hyper", stack:1000, buyIn:25000, currency:"Chips", prizes:{ participation:null, winner:"MPT S6 Winner's Ring", extra:null }, notes:"" },
+      { name:"Metaverse Poker Tour Event #62", date:"2026-09-28", time:"00:00", groupDate:"2026-09-27", tz:"America/New_York", speed:"hyper", stack:1000, buyIn:5000, currency:"Chips", prizes:{ participation:null, winner:"MPT S6 Winner's Ring", extra:null }, notes:"" },
+      { name:"Metaverse Poker Tour Event #63", date:"2026-09-28", time:"01:00", groupDate:"2026-09-27", tz:"America/New_York", speed:"turbo", stack:1500, buyIn:2500000, currency:"Chips", prizes:{ participation:null, winner:"MPT S6 Winner's Ring", extra:null }, notes:"" }
+    ]
+  },
+  {
+    id:"awards-2026", name:"Spotlight Series", short:"AWARDS", accent:"gold",
+    start:"2026-09-17", end:"2026-09-21",
+    blurb:"Sixty events over four days, from turbo micros to the Mini Main, the Main Event " +
+          "and the Highroller. Every winner takes home the Director's All-In Button.",
+    events:[
+      { name:"Spotlight Series Event 1", date:"2026-09-17", time:"13:00", tz:"America/New_York", speed:"turbo", stack:2000, buyIn:200000, currency:"Chips", prizes:{ participation:null, winner:"Director's All-In Button", extra:null }, notes:"" },
+      { name:"Spotlight Series Event 2", date:"2026-09-17", time:"14:00", tz:"America/New_York", speed:"hyper", stack:1000, buyIn:100000, currency:"Chips", prizes:{ participation:null, winner:"Director's All-In Button", extra:null }, notes:"" },
+      { name:"Spotlight Series Event 3", date:"2026-09-17", time:"15:00", tz:"America/New_York", speed:"turbo", stack:2000, buyIn:1000000, currency:"Chips", prizes:{ participation:null, winner:"Director's All-In Button", extra:null }, notes:"" },
+      { name:"Spotlight Series Event 4", date:"2026-09-17", time:"16:00", tz:"America/New_York", speed:"hyper", stack:200, buyIn:50000, currency:"Chips", prizes:{ participation:null, winner:"Director's All-In Button", extra:null }, notes:"" },
+      { name:"Spotlight Series Event 5", date:"2026-09-17", time:"17:00", tz:"America/New_York", speed:"turbo", stack:2500, buyIn:400000, currency:"Chips", prizes:{ participation:null, winner:"Director's All-In Button", extra:null }, notes:"" },
+      { name:"Spotlight Series Event 6", date:"2026-09-17", time:"18:00", tz:"America/New_York", speed:"turbo", stack:2000, buyIn:200000, currency:"Chips", prizes:{ participation:null, winner:"Director's All-In Button", extra:null }, notes:"" },
+      { name:"Spotlight Series Event 7", date:"2026-09-17", time:"19:00", tz:"America/New_York", speed:"regular", stack:3000, buyIn:5000000, currency:"Chips", prizes:{ participation:null, winner:"Director's All-In Button", extra:null }, notes:"" },
+      { name:"Spotlight Series Event 8", date:"2026-09-17", time:"20:00", tz:"America/New_York", speed:"turbo", stack:2000, buyIn:250000, currency:"Chips", prizes:{ participation:null, winner:"Director's All-In Button", extra:null }, notes:"" },
+      { name:"Spotlight Series Event 9", date:"2026-09-17", time:"20:00", tz:"America/New_York", speed:"hyper", stack:500, buyIn:20000, currency:"Chips", prizes:{ participation:null, winner:"Director's All-In Button", extra:null }, notes:"" },
+      { name:"Spotlight Series Event 10", date:"2026-09-17", time:"21:00", tz:"America/New_York", speed:"turbo", stack:3000, buyIn:2000000, currency:"Chips", prizes:{ participation:null, winner:"Director's All-In Button", extra:null }, notes:"" },
+      { name:"Spotlight Series Event 11", date:"2026-09-17", time:"22:00", tz:"America/New_York", speed:"hyper", stack:1500, buyIn:50000, currency:"Chips", prizes:{ participation:null, winner:"Director's All-In Button", extra:null }, notes:"" },
+      { name:"Spotlight Series Event 12", date:"2026-09-17", time:"23:00", tz:"America/New_York", speed:"turbo", stack:1500, buyIn:750000, currency:"Chips", prizes:{ participation:null, winner:"Director's All-In Button", extra:null }, notes:"" },
+      { name:"Spotlight Series Event 13", date:"2026-09-18", time:"13:00", tz:null, speed:"hyper", stack:1000, buyIn:25000, currency:"Chips", prizes:{ participation:null, winner:"Director's All-In Button", extra:null }, notes:"" },
+      { name:"Spotlight Series Event 14", date:"2026-09-18", time:"15:00", tz:null, speed:"turbo", stack:1000, buyIn:100000, currency:"Chips", prizes:{ participation:null, winner:"Director's All-In Button", extra:null }, notes:"" },
+      { name:"Spotlight Series Event 15", date:"2026-09-18", time:"16:00", tz:null, speed:"turbo", stack:1000, buyIn:50000, currency:"Chips", prizes:{ participation:null, winner:"Director's All-In Button", extra:null }, notes:"" },
+      { name:"Spotlight Series Event 16", date:"2026-09-18", time:"17:00", tz:null, speed:"turbo", stack:1000, buyIn:1000000, currency:"Chips", prizes:{ participation:null, winner:"Director's All-In Button", extra:null }, notes:"" },
+      { name:"Spotlight Series Event 17", date:"2026-09-18", time:"18:00", tz:null, speed:"turbo", stack:1500, buyIn:100000, currency:"Chips", prizes:{ participation:null, winner:"Director's All-In Button", extra:null }, notes:"" },
+      { name:"Spotlight Series Event 18", date:"2026-09-18", time:"19:00", tz:null, speed:"hyper", stack:1000, buyIn:20000, currency:"Chips", prizes:{ participation:null, winner:"Director's All-In Button", extra:null }, notes:"" },
+      { name:"Spotlight Series Event 19", date:"2026-09-18", time:"20:00", tz:null, speed:"turbo", stack:2000, buyIn:600000, currency:"Chips", prizes:{ participation:null, winner:"Director's All-In Button", extra:null }, notes:"" },
+      { name:"Spotlight Series Event 20", date:"2026-09-18", time:"21:00", tz:null, speed:"turbo", stack:1000, buyIn:150000, currency:"Chips", prizes:{ participation:null, winner:"Director's All-In Button", extra:null }, notes:"" },
+      { name:"Spotlight Series Event 21", date:"2026-09-18", time:"22:00", tz:null, speed:"hyper", stack:500, buyIn:10000, currency:"Chips", prizes:{ participation:null, winner:"Director's All-In Button", extra:null }, notes:"" },
+      { name:"Spotlight Series Event 22", date:"2026-09-18", time:"23:00", tz:null, speed:"hyper", stack:1000, buyIn:50000, currency:"Chips", prizes:{ participation:null, winner:"Director's All-In Button", extra:null }, notes:"" },
+      { name:"Spotlight Series Event 23", date:"2026-09-19", time:"00:00", groupDate:"2026-09-18", tz:null, speed:"turbo", stack:1000, buyIn:75000, currency:"Chips", prizes:{ participation:null, winner:"Director's All-In Button", extra:null }, notes:"" },
+      { name:"Spotlight Series Event 24", date:"2026-09-19", time:"00:30", groupDate:"2026-09-18", tz:null, speed:"hyper", stack:1000, buyIn:10000, currency:"Chips", prizes:{ participation:null, winner:"Director's All-In Button", extra:null }, notes:"" },
+      { name:"Spotlight Mini Main", date:"2026-09-19", time:"01:00", groupDate:"2026-09-18", tz:null, tags:["main"], speed:"regular", stack:4000, buyIn:2500000, currency:"Chips", prizes:{ participation:null, winner:"Director's All-In Button", extra:null }, notes:"" },
+      { name:"Spotlight Series Event 26", date:"2026-09-19", time:"02:00", groupDate:"2026-09-18", tz:null, speed:"turbo", stack:1500, buyIn:200000, currency:"Chips", prizes:{ participation:null, winner:"Director's All-In Button", extra:null }, notes:"" },
+      { name:"Spotlight Series Event 27", date:"2026-09-19", time:"03:00", groupDate:"2026-09-18", tz:null, speed:"turbo", stack:2000, buyIn:3000000, currency:"Chips", prizes:{ participation:null, winner:"Director's All-In Button", extra:null }, notes:"" },
+      { name:"Spotlight Series Event 28", date:"2026-09-19", time:"04:00", groupDate:"2026-09-18", tz:null, speed:"turbo", stack:1500, buyIn:300000, currency:"Chips", prizes:{ participation:null, winner:"Director's All-In Button", extra:null }, notes:"" },
+      { name:"Spotlight Series Event 29", date:"2026-09-19", time:"13:00", tz:null, speed:"turbo", stack:1500, buyIn:25000, currency:"Chips", prizes:{ participation:null, winner:"Director's All-In Button", extra:null }, notes:"" },
+      { name:"Spotlight Series Event 30", date:"2026-09-19", time:"15:00", tz:null, speed:"turbo", stack:1000, buyIn:2500000, currency:"Chips", prizes:{ participation:null, winner:"Director's All-In Button", extra:null }, notes:"" },
+      { name:"Spotlight Series Event 31", date:"2026-09-19", time:"16:00", tz:null, speed:"turbo", stack:1500, buyIn:10000, currency:"Chips", prizes:{ participation:null, winner:"Director's All-In Button", extra:null }, notes:"" },
+      { name:"Spotlight Series Event 32", date:"2026-09-19", time:"17:00", tz:null, speed:"turbo", stack:1000, buyIn:100000, currency:"Chips", prizes:{ participation:null, winner:"Director's All-In Button", extra:null }, notes:"" },
+      { name:"Spotlight Series Event 33", date:"2026-09-19", time:"18:00", tz:null, speed:"turbo", stack:1500, buyIn:500000, currency:"Chips", prizes:{ participation:null, winner:"Director's All-In Button", extra:null }, notes:"" },
+      { name:"Spotlight Series Event 34", date:"2026-09-19", time:"19:00", tz:null, speed:"hyper", stack:500, buyIn:50000, currency:"Chips", prizes:{ participation:null, winner:"Director's All-In Button", extra:null }, notes:"" },
+      { name:"Spotlight Series Event 35", date:"2026-09-19", time:"20:00", tz:null, speed:"turbo", stack:2500, buyIn:2000000, currency:"Chips", prizes:{ participation:null, winner:"Director's All-In Button", extra:null }, notes:"" },
+      { name:"Spotlight Series Event 36", date:"2026-09-19", time:"21:00", tz:null, speed:"turbo", stack:1000, buyIn:100000, currency:"Chips", prizes:{ participation:null, winner:"Director's All-In Button", extra:null }, notes:"" },
+      { name:"Spotlight Main Event", date:"2026-09-19", time:"22:00", tz:null, speed:"regular", stack:5000, buyIn:10000000, currency:"Chips", prizes:{ participation:null, winner:"Director's All-In Button", extra:null }, notes:"" },
+      { name:"Spotlight Series Event 38", date:"2026-09-19", time:"23:00", tz:null, speed:"turbo", stack:2000, buyIn:500000, currency:"Chips", prizes:{ participation:null, winner:"Director's All-In Button", extra:null }, notes:"" },
+      { name:"Spotlight Series Event 39", date:"2026-09-20", time:"00:00", groupDate:"2026-09-19", tz:null, speed:"turbo", stack:1500, buyIn:100000, currency:"Chips", prizes:{ participation:null, winner:"Director's All-In Button", extra:null }, notes:"" },
+      { name:"Spotlight Series Event 40", date:"2026-09-20", time:"00:30", groupDate:"2026-09-19", tz:null, speed:"turbo", stack:500, buyIn:300000, currency:"Chips", prizes:{ participation:null, winner:"Director's All-In Button", extra:null }, notes:"" },
+      { name:"Spotlight Series Event 41", date:"2026-09-20", time:"01:00", groupDate:"2026-09-19", tz:null, speed:"turbo", stack:2000, buyIn:50000, currency:"Chips", prizes:{ participation:null, winner:"Director's All-In Button", extra:null }, notes:"" },
+      { name:"Spotlight Series Event 42", date:"2026-09-20", time:"02:00", groupDate:"2026-09-19", tz:null, speed:"turbo", stack:1000, buyIn:100000, currency:"Chips", prizes:{ participation:null, winner:"Director's All-In Button", extra:null }, notes:"" },
+      { name:"Spotlight Series Event 43", date:"2026-09-20", time:"03:00", groupDate:"2026-09-19", tz:null, speed:"turbo", stack:2000, buyIn:500000, currency:"Chips", prizes:{ participation:null, winner:"Director's All-In Button", extra:null }, notes:"" },
+      { name:"Spotlight Series Event 44", date:"2026-09-20", time:"04:00", groupDate:"2026-09-19", tz:null, speed:"turbo", stack:1500, buyIn:1000000, currency:"Chips", prizes:{ participation:null, winner:"Director's All-In Button", extra:null }, notes:"" },
+      { name:"Spotlight Series Event 45", date:"2026-09-20", time:"13:00", tz:null, speed:"turbo", stack:1500, buyIn:50000, currency:"Chips", prizes:{ participation:null, winner:"Director's All-In Button", extra:null }, notes:"" },
+      { name:"Spotlight Series Event 46", date:"2026-09-20", time:"15:00", tz:null, speed:"turbo", stack:1000, buyIn:5000, currency:"Chips", prizes:{ participation:null, winner:"Director's All-In Button", extra:null }, notes:"" },
+      { name:"Spotlight Series Event 47", date:"2026-09-20", time:"16:00", tz:null, speed:"turbo", stack:1500, buyIn:500000, currency:"Chips", prizes:{ participation:null, winner:"Director's All-In Button", extra:null }, notes:"" },
+      { name:"Spotlight Series Event 48", date:"2026-09-20", time:"17:00", tz:null, speed:"turbo", stack:1000, buyIn:100000, currency:"Chips", prizes:{ participation:null, winner:"Director's All-In Button", extra:null }, notes:"" },
+      { name:"Spotlight Series Event 49", date:"2026-09-20", time:"18:00", tz:null, speed:"turbo", stack:1500, buyIn:25000, currency:"Chips", prizes:{ participation:null, winner:"Director's All-In Button", extra:null }, notes:"" },
+      { name:"Spotlight Series Event 50", date:"2026-09-20", time:"19:00", tz:null, speed:"hyper", stack:500, buyIn:10000, currency:"Chips", prizes:{ participation:null, winner:"Director's All-In Button", extra:null }, notes:"" },
+      { name:"Spotlight Series Event 51", date:"2026-09-20", time:"20:00", tz:null, speed:"turbo", stack:1000, buyIn:100000, currency:"Chips", prizes:{ participation:null, winner:"Director's All-In Button", extra:null }, notes:"" },
+      { name:"Spotlight Highroller", date:"2026-09-20", time:"21:00", tz:null, tags:["main"], speed:"regular", stack:7000, buyIn:50000000, currency:"Chips", prizes:{ participation:null, winner:"Director's All-In Button", extra:null }, notes:"" },
+      { name:"Spotlight Series Event 53", date:"2026-09-20", time:"22:00", tz:null, speed:"turbo", stack:1000, buyIn:500000, currency:"Chips", prizes:{ participation:null, winner:"Director's All-In Button", extra:null }, notes:"" },
+      { name:"Spotlight Series Event 54", date:"2026-09-20", time:"23:00", tz:null, speed:"turbo", stack:2000, buyIn:25000, currency:"Chips", prizes:{ participation:null, winner:"Director's All-In Button", extra:null }, notes:"" },
+      { name:"Spotlight Series Event 55", date:"2026-09-21", time:"00:00", groupDate:"2026-09-20", tz:null, speed:"turbo", stack:1500, buyIn:100000, currency:"Chips", prizes:{ participation:null, winner:"Director's All-In Button", extra:null }, notes:"" },
+      { name:"Spotlight Series Event 56", date:"2026-09-21", time:"00:30", groupDate:"2026-09-20", tz:null, speed:"hyper", stack:500, buyIn:5000, currency:"Chips", prizes:{ participation:null, winner:"Director's All-In Button", extra:null }, notes:"" },
+      { name:"Spotlight Series Event 57", date:"2026-09-21", time:"01:00", groupDate:"2026-09-20", tz:null, speed:"turbo", stack:2000, buyIn:100000, currency:"Chips", prizes:{ participation:null, winner:"Director's All-In Button", extra:null }, notes:"" },
+      { name:"Spotlight Series Event 58", date:"2026-09-21", time:"02:00", groupDate:"2026-09-20", tz:null, speed:"hyper", stack:1000, buyIn:50000, currency:"Chips", prizes:{ participation:null, winner:"Director's All-In Button", extra:null }, notes:"" },
+      { name:"Spotlight Series Event 59", date:"2026-09-21", time:"03:00", groupDate:"2026-09-20", tz:null, speed:"turbo", stack:2000, buyIn:500000, currency:"Chips", prizes:{ participation:null, winner:"Director's All-In Button", extra:null }, notes:"" },
+      { name:"Spotlight Series Event 60", date:"2026-09-21", time:"04:00", groupDate:"2026-09-20", tz:null, speed:"turbo", stack:1500, buyIn:100000, currency:"Chips", prizes:{ participation:null, winner:"Director's All-In Button", extra:null }, notes:"" }
+    ]
+  },
+  {
+    id:"mpt-2026-medieval", name:"Metaverse Poker Tour - Medieval", short:"MPT", accent:"mpt",
+    start:"2026-10-29", end:"2026-11-01",
+    blurb:"MPT's next stop brings knights, castles and a medieval feast to the tables. Schedule to be announced.",
+    events:[]
+  },
+  {
+    id:"mpt-2026-galaxy", name:"Metaverse Poker Tour - Galaxy", short:"MPT", accent:"mpt",
+    start:"2026-12-03", end:"2026-12-06",
+    blurb:"MPT goes intergalactic for this stop — out-of-this-world tables and prizing. Schedule to be announced.",
+    events:[]
+  },
+  {
+    id:"mpt-2027-saloon", name:"Metaverse Poker Tour - Saloon", short:"MPT", accent:"mpt",
+    start:"2027-01-28", end:"2027-01-31",
+    blurb:"Wild west showdowns at the MPT Saloon stop. Schedule to be announced.",
+    events:[]
+  },
+  {
+    id:"mpt-2027-arena", name:"Metaverse Poker Tour - MPT Arena", short:"MPT", accent:"mpt",
+    start:"2027-02-25", end:"2027-02-28",
+    blurb:"MPT Arena brings an esports-arena atmosphere to the felt. Schedule to be announced.",
+    events:[]
+  }
+];
+
+/* --------------------------------------------------------------------------
+ * LOCKED_HIGHLIGHTS — a teaser for something not announced yet: no real
+ * date, so nothing to click into. Rendered as a non-interactive card at the
+ * end of the Highlights list instead of a SERIES entry.
+ *   name   shown as the card title
+ *   when   free-text placeholder shown where a date range would go
+ *   note   one line of flavor text
+ * ------------------------------------------------------------------------ */
+const LOCKED_HIGHLIGHTS = [
+  { name:"Spooky Stacks", when:"Oct TBD", note:"More information coming soon" }
+];
+
+/* --------------------------------------------------------------------------
+ * HIGHLIGHT_ANNOUNCEMENTS — a confirmed, dated event with nothing to drill
+ * into: no schedule, no filters, just the one thing to know. Rendered as a
+ * non-interactive card (like LOCKED_HIGHLIGHTS) but themed with its own
+ * accent instead of muted, since — unlike a locked entry — this one's real.
+ *   name    shown as the card title
+ *   short   the small tag, same role as a SERIES' `short`
+ *   accent  a key from the accent palette (see SERIES for the options)
+ *   when    free-text shown where a date range would go
+ *   note    description — fold any date/time detail in here, since there's
+ *           no event row to show it on
+ * ------------------------------------------------------------------------ */
+const HIGHLIGHT_ANNOUNCEMENTS = [
+  { name:"Main Stage Showdown", short:"SHOWDOWN", accent:"violet", when:"18 September 2026",
+    note:"Invite only. 64 players face off in a single-elimination heads-up bracket for the " +
+         "Main Stage. Begins at 5:00 PM ET." }
+];
+
+/* --------------------------------------------------------------------------
+ * OVERRIDES — one-off changes to a single weekly occurrence.
+ *   { weeklyId, date, cancelled:true }        cancels that one week
+ *   { weeklyId, date, patch:{ ...fields } }   changes fields for that week only
+ *
+ * NOTE: you don't need a `cancelled` entry here for a highlight-series day —
+ * every WEEKLY rule (other than the Nightly ones) already stands down
+ * automatically on any date a SERIES has an event. OVERRIDES is only for
+ * exceptions on an otherwise-ordinary week, like the promo below.
+ * ------------------------------------------------------------------------ */
+const OVERRIDES = [
+  // Example: a one-week promotional change (Monday Mayhem runs as a
+  // freeroll that week only — every other Monday it's back to normal).
+  { weeklyId:"mon-mayhem", date:"2026-09-28", patch:{ name:"Monday Mayhem — Freeroll Special", buyIn:0 } }
+];
+
+/* ==========================================================================
+ *
+ *   ############   END OF SCHEDULE DATA — NOTHING BELOW NEEDS EDITING   #####
+ *
+ * ========================================================================== */
+
+const ISSUES = [];
+const $  = (s, r) => (r || document).querySelector(s);
+const pad = n => String(n).padStart(2, "0");
+const esc = s => String(s == null ? "" : s).replace(/[&<>"']/g,
+  c => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" }[c]));
+const num = n => Number(n).toLocaleString(undefined);
+
+/* --------------------------------------------------------- query params -- */
+const Q     = new URLSearchParams(location.search);
+const DEBUG = Q.get("debug") === "1";
+const BOOT  = Date.now();
+let NOW_BASE = null;
+if (Q.get("now")) {
+  const t = Date.parse(Q.get("now"));
+  if (isNaN(t)) ISSUES.push('Could not parse ?now="' + Q.get("now") + '" — using the real time.');
+  else NOW_BASE = t;
+}
+/* Time advances normally from an overridden base, so countdowns still tick. */
+const nowMs = () => NOW_BASE === null ? Date.now() : NOW_BASE + (Date.now() - BOOT);
+
+/* ------------------------------------------------------------- timezone -- */
+function tzValid(tz){ try { new Intl.DateTimeFormat("en", { timeZone: tz }); return true; }
+                      catch (e) { return false; } }
+
+/* Every viewer sees the schedule in Eastern Time — no per-viewer local-time
+   conversion. ?tz= is still available to preview another zone for testing. */
+let VIEW_TZ = "America/New_York";
+if (Q.get("tz")) {
+  if (tzValid(Q.get("tz"))) { VIEW_TZ = Q.get("tz"); }
+  else ISSUES.push('Unknown timezone in ?tz="' + Q.get("tz") + '" — using Eastern Time.');
+}
+
+/* Wall-clock fields of an instant, as seen in a given IANA zone. */
+function zoneParts(instant, tz){
+  const p = {};
+  const dtf = new Intl.DateTimeFormat("en-US", {
+    timeZone: tz, hour12: false,
+    year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit"
+  });
+  for (const part of dtf.formatToParts(instant)) p[part.type] = part.value;
+  let h = parseInt(p.hour, 10); if (h === 24) h = 0;
+  return { y:+p.year, mo:+p.month, d:+p.day, h: h, mi:+p.minute };
+}
+
+/* A wall-clock date/time in `tz` -> the true UTC instant.
+   Iterates twice so DST transitions resolve correctly. No library needed. */
+function zonedToInstant(y, mo, d, h, mi, tz){
+  const target = Date.UTC(y, mo - 1, d, h, mi);
+  if (!tz) return target;
+  let guess = target;
+  for (let i = 0; i < 3; i++){
+    const p = zoneParts(guess, tz);
+    const offset = Date.UTC(p.y, p.mo - 1, p.d, p.h, p.mi) - guess;
+    const next = target - offset;
+    if (next === guess) break;
+    guess = next;
+  }
+  return guess;
+}
+
+function parseTime(t, where){
+  const m = /^(\d{1,2}):(\d{2})$/.exec(String(t || "").trim());
+  if (!m) { ISSUES.push('Bad time "' + t + '" in ' + where + ' — expected "HH:MM". Defaulted to 00:00.');
+            return { h:0, mi:0 }; }
+  const h = +m[1], mi = +m[2];
+  if (h > 23 || mi > 59) { ISSUES.push('Out-of-range time "' + t + '" in ' + where + '.');
+                           return { h: Math.min(h,23), mi: Math.min(mi,59) }; }
+  return { h: h, mi: mi };
+}
+function parseDate(s, where){
+  const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(s || "").trim());
+  if (!m) { ISSUES.push('Bad date "' + s + '" in ' + where + ' — expected "YYYY-MM-DD".'); return null; }
+  return { y:+m[1], mo:+m[2], d:+m[3] };
+}
+
+/* ------------------------------------------------ local civil-date keys -- */
+/* A "key" is a YYYY-MM-DD calendar date in the VIEWER's timezone, so
+   "today" always means the viewer's today, never UTC's. */
+function keyOf(instant){ const p = zoneParts(instant, VIEW_TZ);
+                         return p.y + "-" + pad(p.mo) + "-" + pad(p.d); }
+function keyAdd(key, n){
+  const a = key.split("-").map(Number);
+  const dt = new Date(Date.UTC(a[0], a[1] - 1, a[2]) + n * 86400000);
+  return dt.getUTCFullYear() + "-" + pad(dt.getUTCMonth() + 1) + "-" + pad(dt.getUTCDate());
+}
+function keyDow(key){ const a = key.split("-").map(Number);
+                      return new Date(Date.UTC(a[0], a[1] - 1, a[2])).getUTCDay(); }
+/* Whole calendar days from key a to key b. Used for "starts in N days" so the
+   answer matches what a player would count on a calendar, rather than rounding
+   up a partial day. */
+function keyDiff(a, b){
+  const pa = a.split("-").map(Number), pb = b.split("-").map(Number);
+  return Math.round((Date.UTC(pb[0], pb[1] - 1, pb[2]) -
+                     Date.UTC(pa[0], pa[1] - 1, pa[2])) / 86400000);
+}
+/* Keys are already local, so format them in UTC to avoid a second shift. */
+function fmtKey(key, opts){
+  const a = key.split("-").map(Number);
+  const o = Object.assign({ timeZone:"UTC" }, opts);
+  return new Intl.DateTimeFormat(undefined, o).format(Date.UTC(a[0], a[1] - 1, a[2]));
+}
+
+function fmtTime(instant){
+  return new Intl.DateTimeFormat(undefined,
+    { timeZone: VIEW_TZ, hour:"numeric", minute:"2-digit" }).format(instant);
+}
+function zoneAbbr(instant){
+  try {
+    const parts = new Intl.DateTimeFormat("en-US",
+      { timeZone: VIEW_TZ, timeZoneName:"short", hour:"numeric" }).formatToParts(instant);
+    for (const p of parts) if (p.type === "timeZoneName") return p.value;
+  } catch (e) {}
+  return "";
+}
+const DOW_LONG  = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+const DOW_SHORT = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
+
+/* ------------------------------------------------------ occurrence build -- */
+function normPrizes(p){
+  p = p || {};
+  return { participation: p.participation || null, winner: p.winner || null, extra: p.extra || null };
+}
+function hasPrizes(p){ return !!(p && (p.participation || p.winner || p.extra)); }
+
+/* Event "type" for filtering — e.g. inside a 100+ event series, a player
+   wants "just show me the Main Events" or "just the Satellites", not just
+   speed/buy-in. Detected from the event name (the wording tournament
+   organizers already use), with an optional explicit `tags` array on the
+   event to add or correct a tag by hand — most events never need one. */
+const TYPE_LABELS = { main:"Main Events", satellite:"Satellites", freeroll:"Freerolls", highroller:"High Roller" };
+/* MPT's own gradient treatment (see [data-theme="mpt"] in the stylesheet)
+   keys off the accent value, not a hardcoded series id, so any future
+   series sharing that accent gets the same look automatically. */
+/* Series whose accent gets a gradient treatment (see [data-theme] rules in
+   the stylesheet) instead of a flat accent colour. */
+const GRADIENT_THEMES = { mpt:true, gold:true };
+function seriesThemeAttr(s){ return GRADIENT_THEMES[s.accent] ? ' data-theme="' + s.accent + '"' : ""; }
+function seriesTagLabel(s){ return (s.accent === "mpt" ? "♦ " : "") + (s.short || "EVENT"); }
+/* Speed keys that still run real events but shouldn't clutter the speed
+   filter chips — the events themselves are unaffected, they just aren't
+   individually filterable by these two speeds any more. */
+const HIDDEN_SPEED_FILTERS = ["deep", "bounty"];
+function eventTypeTags(o){
+  const tags = new Set(o.tags || []);
+  const n = (o.name || "").toLowerCase();
+  if (n.indexOf("satellite") >= 0) tags.add("satellite");
+  else if (n.indexOf("main event") >= 0) tags.add("main");
+  if (o.buyIn === 0) tags.add("freeroll");
+  if (n.indexOf("high roller") >= 0) tags.add("highroller");
+  return [...tags];
+}
+
+function mkOcc(src, key, instant, extra){
+  const o = Object.assign({
+    name: src.name || "Untitled event",
+    speed: src.speed || null,
+    stack: src.stack,
+    buyIn: src.buyIn,
+    currency: src.currency || "Chips",
+    category: src.category || "weekly",
+    club: src.club || null,
+    prizes: normPrizes(src.prizes),
+    prizePool: src.prizePool != null ? src.prizePool : null,
+    tags: src.tags || null,
+    notes: src.notes || "",
+    key: key,
+    instant: instant
+  }, extra || {});
+  if (o.speed && !SPEEDS[o.speed])
+    ISSUES.push('Unknown speed "' + o.speed + '" on "' + o.name + '" — no SPEEDS entry.');
+  if (o.club && !CLUBS[o.club])
+    ISSUES.push('Unknown club "' + o.club + '" on "' + o.name + '" — no CLUBS entry.');
+  return o;
+}
+
+/* A WEEKLY rule's `day` is a single 0-6 number, an array of them, or the
+   string "daily" (every day — see the Nightly entries). */
+function dayMatches(w, dow){
+  if (w.day === "daily") return true;
+  if (Array.isArray(w.day)) return w.day.indexOf(dow) >= 0;
+  return w.day === dow;
+}
+function dayFieldOk(day){
+  if (day === "daily") return true;
+  if (Array.isArray(day))
+    return day.length > 0 && day.every(function(d){ return typeof d === "number" && d >= 0 && d <= 6; });
+  return typeof day === "number" && day >= 0 && day <= 6;
+}
+
+function buildOccurrences(){
+  const out = [];
+  const seen = new Set();
+  for (const w of WEEKLY){
+    if (seen.has(w.id)) ISSUES.push('Duplicate WEEKLY id "' + w.id + '".');
+    seen.add(w.id);
+    if (!dayFieldOk(w.day))
+      ISSUES.push('Bad day "' + w.day + '" on "' + w.name + '" — expected 0-6, an array of those, or "daily".');
+    if (w.tz && !tzValid(w.tz)) ISSUES.push('Unknown tz "' + w.tz + '" on "' + w.name + '".');
+  }
+
+  const ov = new Map();
+  for (const o of OVERRIDES){
+    if (!seen.has(o.weeklyId)) ISSUES.push('OVERRIDE references unknown weeklyId "' + o.weeklyId + '".');
+    if (!parseDate(o.date, "an OVERRIDE for " + o.weeklyId)) continue;
+    ov.set(o.weeklyId + "|" + o.date, o);
+  }
+
+  /* Series events are always included, even beyond the weekly horizon.
+     Built before the weekly ring below so we know which calendar days a
+     highlight event is actually running on. */
+  for (const s of SERIES){
+    const sStart = parseDate(s.start, 'SERIES "' + s.name + '" start');
+    const sEnd   = parseDate(s.end,   'SERIES "' + s.name + '" end');
+    if (sStart && sEnd && s.start > s.end)
+      ISSUES.push('SERIES "' + s.name + '" ends before it starts.');
+    for (const w of (s.weeks || [])){
+      const wStart = parseDate(w.start, 'a WEEK in SERIES "' + s.name + '"');
+      const wEnd   = parseDate(w.end,   'a WEEK in SERIES "' + s.name + '"');
+      if (wStart && wEnd && w.start > w.end)
+        ISSUES.push('A week ("' + w.label + '") in SERIES "' + s.name + '" ends before it starts.');
+    }
+    for (const e of (s.events || [])){
+      const d = parseDate(e.date, 'an event in "' + s.name + '"');
+      if (!d) continue;
+      if (s.start && s.end && (e.date < s.start || e.date > s.end))
+        ISSUES.push('"' + e.name + '" (' + e.date + ') falls outside ' + s.name +
+                    "'s range " + s.start + " → " + s.end + ".");
+      const t = parseTime(e.time, '"' + e.name + '"');
+      /* groupDate lets a late-night event whose true instant is just past
+         midnight (the next calendar date) still display under the evening
+         it's scheduled as part of — the instant stays correct for sorting
+         and countdowns; only which day-card it appears under changes. */
+      const key = e.groupDate || e.date;
+      out.push(mkOcc(Object.assign({ category:"highlight" }, e), key,
+        zonedToInstant(d.y, d.mo, d.d, t.h, t.mi, e.tz || null),
+        { seriesId: s.id, seriesShort: s.short, seriesName: s.name, accent: s.accent }));
+    }
+  }
+  /* The specific calendar days a highlight event is actually running —
+     the usual weekly ring stands down on these (below), aside from the
+     Nightly rules, since the felts are given over to the series instead. */
+  const highlightDates = new Set(out.map(function(o){ return o.key; }));
+
+  /* Weekly ring, expanded across the horizon. Start 7 days back — enough
+     that the Weekly tab always has this whole calendar week's occurrences
+     on hand (down to last Monday), even late in the week — so it can grey
+     out days that have already passed instead of only ever showing each
+     rule's next future run. */
+  const startKey = keyAdd(keyOf(nowMs()), -7);
+  const endKey   = keyAdd(keyOf(nowMs()), CONFIG.horizonDays);
+  for (let key = startKey; key <= endKey; key = keyAdd(key, 1)){
+    const dow = keyDow(key);
+    const standDown = highlightDates.has(key);
+    for (const w of WEEKLY){
+      if (!dayMatches(w, dow)) continue;
+      /* A highlight event takes over the schedule for the day — every
+         weekly rule stands down except the Nightly ones ("daily"), which
+         keep running seven days a week regardless. */
+      if (standDown && w.day !== "daily") continue;
+      const o = ov.get(w.id + "|" + key);
+      if (o && o.cancelled) continue;
+      const base = Object.assign({}, w, (o && o.patch) || {});
+      const t = parseTime(base.time, '"' + base.name + '"');
+      /* `rollover` means the true instant is the first moment of the NEXT
+         calendar day (e.g. a "12:00 AM" event ending a Monday night is
+         really Tuesday 00:00) — but it still displays under `key`, the
+         day it's branded and scheduled as part of. */
+      const instantKey = base.rollover ? keyAdd(key, 1) : key;
+      const ib = instantKey.split("-").map(Number);
+      out.push(mkOcc(base, key,
+        zonedToInstant(ib[0], ib[1], ib[2], t.h, t.mi, base.tz || null),
+        { weeklyId: w.id, patched: !!(o && o.patch) }));
+    }
+  }
+
+  /* Club Schedule — one-off dated freerolls, always included regardless of
+     the weekly horizon (same reasoning as SERIES events above) and never
+     stood down for a highlight day — Club rewards run independently of the
+     regular tournament ring. */
+  for (const c of CLUB_SCHEDULE){
+    const d = parseDate(c.date, "a CLUB_SCHEDULE entry");
+    if (!d) continue;
+    if (!CLUBS[c.club]) ISSUES.push('Unknown club "' + c.club + '" in CLUB_SCHEDULE for ' + c.date + '.');
+    const t = parseTime(c.time, "CLUB_SCHEDULE entry " + c.date);
+    out.push(mkOcc({
+      name: (CLUBS[c.club] || "Club") + " Freeroll",
+      category: "club",
+      club: c.club,
+      speed: "turbo",
+      stack: 1000,
+      buyIn: 0,
+      currency: "Chips",
+      prizePool: c.prizePool,
+      prizes:{ participation:null, winner:(CLUBS[c.club] || "Club") + " Badge", extra:null }
+    }, c.date, zonedToInstant(d.y, d.mo, d.d, t.h, t.mi, "America/New_York"), {}));
+  }
+
+  out.sort((a, b) => a.instant - b.instant);
+  out.forEach((o, i) => { o.uid = "e" + i; });
+  return out;
+}
+
+/* --------------------------------------------------------------- render -- */
+const ACCENT = { weekly:"var(--c-weekly)", club:"var(--c-club)", highlight:"var(--c-highlight)" };
+function accentOf(o){
+  if (o.accent) return "var(--a-" + o.accent + ")";
+  return ACCENT[o.category] || "var(--line-strong)";
+}
+function buyInText(o){
+  if (o.buyIn === 0) return "Freeroll";
+  if (o.buyIn == null) return "—";
+  return num(o.buyIn) + " " + o.currency;
+}
+function prizePoolText(o){ return num(o.prizePool) + " " + o.currency; }
+
+/* Compact "starts in" text — used instead of a clock time + date wherever
+   we want the reader thinking in "how soon" rather than "what time". */
+function startsInText(o, st){
+  if (st === "running") return "Running now";
+  const mins = Math.round((o.instant - nowMs()) / 60000);
+  if (mins <= 0) return "Started";
+  if (mins < 60) return "In " + mins + " min";
+  const hrs = Math.floor(mins / 60), remMins = mins % 60;
+  if (hrs < 24) return "In " + hrs + "h" + (remMins ? " " + remMins + "m" : "");
+  const days = Math.floor(hrs / 24), remHrs = hrs % 24;
+  return "In " + days + "d" + (remHrs ? " " + remHrs + "h" : "");
+}
+function statusOf(o){
+  const n = nowMs(), grace = CONFIG.liveGraceMins * 60000;
+  if (o.instant > n) return "upcoming";
+  if (o.instant + grace > n) return "running";
+  return "past";
+}
+function dayLabel(key){
+  const t = keyOf(nowMs());
+  if (key === t) return "Today";
+  if (key === keyAdd(t, 1)) return "Tomorrow";
+  if (key === keyAdd(t, -1)) return "Yesterday";
+  return fmtKey(key, { weekday:"long", day:"numeric", month:"long" });
+}
+
+function evCard(o, opts){
+  opts = opts || {};
+  const st = statusOf(o);
+  /* A Main Event is the marquee stop of whatever list it's in — flagged
+     regardless of category, so it reads as unmissable next to 62 routine
+     side events, not just filterable via the type chip. */
+  const isMain = eventTypeTags(o).indexOf("main") >= 0;
+  const cls = ["ev", st === "past" ? "is-past" : "", st === "running" ? "is-running" : "",
+               isMain ? "is-main" : ""].join(" ");
+  const accent = isMain ? "var(--gold-bright)" : accentOf(o);
+
+  /* Collapsed row is one line of name + one line of meta. Routine facts
+     (speed, buy-in, club) are plain text in that meta line; a pill is
+     reserved for something genuinely exceptional — nothing routine gets
+     its own badge, so a normal event never grows a whole extra row. */
+  const descriptorParts = [];
+  if (!opts.noClub && o.category === "club" && o.club) descriptorParts.push(CLUBS[o.club] || o.club);
+  if (!opts.noSeries && o.seriesShort) descriptorParts.push(o.seriesShort);
+  if (o.speed && SPEEDS[o.speed]) descriptorParts.push(SPEEDS[o.speed]);
+  if (o.buyIn !== 0) descriptorParts.push(buyInText(o));
+  if (o.prizePool != null) descriptorParts.push(prizePoolText(o) + " prize pool");
+  const descriptor = descriptorParts.join(" · ");
+
+  const pills = [];
+  if (isMain) pills.push('<span class="b main">★ Main Event</span>');
+  if (st === "running") pills.push('<span class="b live">● Running now</span>');
+  if (o.buyIn === 0) pills.push('<span class="b free">Freeroll</span>');
+  if (hasPrizes(o.prizes)) pills.push('<span class="b prize">★ Prizes</span>');
+  if (o.patched) pills.push('<span class="b moved">Changed this week</span>');
+
+  const rows = [
+    ["Buy-in", buyInText(o)],
+    ["Starting stack", o.stack != null ? num(o.stack) : "—"],
+    ["Speed", (o.speed && SPEEDS[o.speed]) || "—"],
+    ["Start time", fmtTime(o.instant) + " " + zoneAbbr(o.instant)],
+    ["Date", fmtKey(o.key, { weekday:"short", day:"numeric", month:"short", year:"numeric" })]
+  ];
+  if (o.category === "club" && o.club) rows.push(["Club", CLUBS[o.club] || o.club]);
+  if (o.prizePool != null) rows.push(["Prize pool", prizePoolText(o)]);
+  if (o.seriesName) rows.push(["Series", o.seriesName]);
+
+  let prz = "";
+  if (hasPrizes(o.prizes)){
+    const li = [];
+    if (o.prizes.participation)
+      li.push('<li><span class="k">All entrants</span><span class="v">' + esc(o.prizes.participation) + "</span></li>");
+    if (o.prizes.winner)
+      li.push('<li><span class="k">Winner</span><span class="v">' + esc(o.prizes.winner) + "</span></li>");
+    if (o.prizes.extra)
+      li.push('<li><span class="k">Also</span><span class="v">' + esc(o.prizes.extra) + "</span></li>");
+    prz = '<div class="prz"><h4>Prizing</h4><ul>' + li.join("") + "</ul></div>";
+  }
+
+  const bodyId = "b-" + o.uid + (opts.ns || "");
+  return '' +
+  '<article class="' + cls + '" style="--accent:' + accent + '">' +
+    '<button class="ev-head" aria-expanded="false" aria-controls="' + bodyId + '">' +
+      '<span class="ev-time">' +
+        (opts.relativeTime
+          ? "<b>" + esc(startsInText(o, st)) + "</b>"
+          : "<b>" + esc(fmtTime(o.instant)) + "</b>" +
+            (opts.showDate
+              ? "<small>" + esc(fmtKey(o.key, { weekday:"short", day:"numeric", month:"short" })) + "</small>"
+              : "")) +
+      "</span>" +
+      '<span class="ev-main">' +
+        '<span class="ev-name">' + esc(o.name) + "</span>" +
+        (descriptor || pills.length
+          ? '<span class="ev-meta">' +
+              (descriptor ? '<span class="meta-text">' + esc(descriptor) + "</span>" : "") +
+              pills.join("") +
+            "</span>"
+          : "") +
+      "</span>" +
+      '<span class="ev-chev" aria-hidden="true">▾</span>' +
+    "</button>" +
+    '<div class="ev-body" id="' + bodyId + '" hidden>' +
+      '<dl class="det">' +
+        rows.map(function(r){ return "<div><dt>" + esc(r[0]) + "</dt><dd>" + esc(r[1]) + "</dd></div>"; }).join("") +
+      "</dl>" + prz +
+      (o.notes ? '<p class="note">' + esc(o.notes) + "</p>" : "") +
+    "</div>" +
+  "</article>";
+}
+
+function emptyState(big, msg){
+  return '<div class="empty-state">' +
+    '<img class="mark" src="assets/mark.png" alt="" width="52" height="52">' +
+    '<div class="big">' + esc(big) + "</div>" +
+    (msg ? "<p>" + msg + "</p>" : "") + "</div>";
+}
+function secHead(title, sub){
+  return '<div class="sec-h"><h2>' + esc(title) + "</h2>" +
+         (sub ? '<span class="sub">' + sub + "</span>" : "") + "</div>";
+}
+/* Group an occurrence list into local calendar days. */
+function byDay(list){
+  const map = new Map();
+  for (const o of list){ if (!map.has(o.key)) map.set(o.key, []); map.get(o.key).push(o); }
+  return [...map.entries()];
+}
+function dayBlocks(list, opts, maxDays, dayTags){
+  const groups = byDay(list);
+  const shown = maxDays ? groups.slice(0, maxDays) : groups;
+  const html = shown.map(function(pair){
+    const key = pair[0], evs = pair[1];
+    const lbl = dayLabel(key);
+    const isToday = key === keyOf(nowMs());
+    const tag = dayTags && dayTags[key];
+    return '<section class="day">' +
+      '<h3 class="day-h"><span' + (isToday ? ' class="today"' : "") + ">" + esc(lbl) + "</span>" +
+      (tag ? '<span class="b prize">' + esc(tag) + "</span>" : "") +
+      '<span class="cnt">' + evs.length + (evs.length === 1 ? " event" : " events") + "</span></h3>" +
+      '<div class="list">' + evs.map(function(o){ return evCard(o, opts); }).join("") + "</div>" +
+    "</section>";
+  }).join("");
+  if (maxDays == null) return html;
+  const rest = groups.slice(shown.length);
+  return { html: html, remainingDays: rest.length,
+           remainingEvents: rest.reduce(function(a, p){ return a + p[1].length; }, 0) };
+}
+
+let OCC = [];
+
+/* -------------------------------------------------------- panel: NEXT UP -- */
+function renderNext(){
+  const grace = CONFIG.liveGraceMins * 60000, n = nowMs(), tk = keyOf(n);
+  const live = OCC.filter(function(o){ return o.instant + grace > n; });
+  const hero = live[0];
+  const rest = live.slice(1, 6);
+  let html = "";
+
+  if (!hero){
+    html += secHead("Next up") + emptyState("No upcoming events scheduled",
+      "The schedule may need updating — check back soon.");
+  } else {
+    const running = statusOf(hero) === "running";
+    const badges = [];
+    if (hero.seriesShort) badges.push('<span class="b acc">' + esc(hero.seriesShort) + "</span>");
+    if (hero.category === "club" && hero.club)
+      badges.push('<span class="b acc">' + esc(CLUBS[hero.club] || hero.club) + "</span>");
+    if (hero.speed && SPEEDS[hero.speed]) badges.push('<span class="b">' + esc(SPEEDS[hero.speed]) + "</span>");
+    if (hero.buyIn === 0) badges.push('<span class="b free">Freeroll</span>');
+    if (hasPrizes(hero.prizes)) badges.push('<span class="b prize">★ Prizes</span>');
+
+    const rows = [
+      ["Buy-in", buyInText(hero)],
+      ["Starting stack", hero.stack != null ? num(hero.stack) : "—"],
+      ["Speed", (hero.speed && SPEEDS[hero.speed]) || "—"]
+    ];
+    if (hero.category === "club" && hero.club) rows.push(["Club", CLUBS[hero.club] || hero.club]);
+    if (hero.prizePool != null) rows.push(["Prize pool", prizePoolText(hero)]);
+    if (hero.seriesName) rows.push(["Series", hero.seriesName]);
+
+    let prz = "";
+    if (hasPrizes(hero.prizes)){
+      const li = [];
+      if (hero.prizes.participation)
+        li.push('<li><span class="k">All entrants</span><span class="v">' + esc(hero.prizes.participation) + "</span></li>");
+      if (hero.prizes.winner)
+        li.push('<li><span class="k">Winner</span><span class="v">' + esc(hero.prizes.winner) + "</span></li>");
+      if (hero.prizes.extra)
+        li.push('<li><span class="k">Also</span><span class="v">' + esc(hero.prizes.extra) + "</span></li>");
+      prz = '<div class="prz"><h4>Prizing</h4><ul>' + li.join("") + "</ul></div>";
+    }
+
+    html += secHead("Next up") +
+      '<div class="hero' + (running ? " live" : "") + '" style="--accent:' + accentOf(hero) + '">' +
+        '<div class="status"><span class="dot"></span>' +
+          (running ? "Running now" : "Next tournament") + "</div>" +
+        "<h3>" + esc(hero.name) + "</h3>" +
+        '<div class="cd' + (running ? " running" : "") + '" id="cd" ' +
+             'data-at="' + hero.instant + '"></div>' +
+        (badges.length ? '<div class="badges">' + badges.join("") + "</div>" : "") +
+        '<dl class="det">' +
+          rows.map(function(r){ return "<div><dt>" + esc(r[0]) + "</dt><dd>" + esc(r[1]) + "</dd></div>"; }).join("") +
+        "</dl>" + prz +
+        (hero.notes ? '<p class="note">' + esc(hero.notes) + "</p>" : "") +
+      "</div>";
+  }
+
+  if (rest.length){
+    html += '<div class="sec" style="margin-top:clamp(26px,5vw,44px)">' +
+      secHead("Then coming up") +
+      '<div class="list">' + rest.map(function(o){ return evCard(o, { ns:"-n", relativeTime:true }); }).join("") + "</div></div>";
+  }
+
+  const liveSeries = SERIES.filter(function(s){ return seriesStatus(s, n, tk).st !== "done"; })
+    .sort(function(a, b){ return String(a.start).localeCompare(String(b.start)); });
+  if (liveSeries.length){
+    html += '<div class="sec" style="margin-top:clamp(26px,5vw,44px)">' +
+      secHead("Highlight events", "Series, festivals and special occasions") +
+      '<div class="list">' + liveSeries.map(function(s){ return seriesTeaser(s, n, tk); }).join("") + "</div></div>";
+  }
+  $("#p-next").innerHTML = html;
+  tickCountdown();
+}
+
+/* ---------------------------------------------------------- panel: TODAY -- */
+function renderToday(){
+  const tk = keyOf(nowMs());
+  const today = OCC.filter(function(o){ return o.key === tk; });
+  const zone = esc(fmtKey(tk, { weekday:"long", day:"numeric", month:"long" }));
+  let html = secHead("Today", zone);
+
+  if (!today.length){
+    const nxt = OCC.filter(function(o){ return o.instant > nowMs(); })[0];
+    html += emptyState("No tournaments today",
+      nxt ? "The next event is <b>" + esc(nxt.name) + "</b> — " +
+            esc(dayLabel(nxt.key)) + " at " + esc(fmtTime(nxt.instant)) + " " + esc(zoneAbbr(nxt.instant)) + "."
+          : "Check back soon.");
+  } else {
+    const up = today.filter(function(o){ return statusOf(o) !== "past"; });
+    const dn = today.filter(function(o){ return statusOf(o) === "past"; });
+    if (up.length)
+      html += '<div class="list">' + up.map(function(o){ return evCard(o, { ns:"-t" }); }).join("") + "</div>";
+    else
+      html += emptyState("Every event today has already started", "Have a look at what's coming up next.");
+    if (dn.length)
+      html += '<div class="sec" style="margin-top:clamp(22px,4vw,36px)">' +
+        secHead("Earlier today", dn.length + (dn.length === 1 ? " event" : " events")) +
+        '<div class="list">' + dn.map(function(o){ return evCard(o, { ns:"-td" }); }).join("") + "</div></div>";
+  }
+  $("#p-today").innerHTML = html;
+}
+
+/* --------------------------------------------------------- panel: WEEKLY -- */
+/* Grouped by the weekday each rule is AUTHORED for (its `day` field), not
+   recomputed per viewer timezone — "Monday Madness" stays under Monday for
+   every player, even one whose local clock has already ticked into Tuesday
+   by the time it starts. That's deliberate: this tab is the operator's
+   canonical weekly ring, the same shape for everyone; only the displayed
+   *time* converts to the viewer's zone. */
+function renderWeekly(){
+  const n = nowMs();
+  const todayKey = keyOf(n);
+  const todayDow = keyDow(todayKey);
+  /* Monday of the current calendar week, in the viewer's own timezone —
+     the anchor for "has this week's occurrence already happened". */
+  const mondayKey = keyAdd(todayKey, -((todayDow + 6) % 7));
+
+  const groups = [[], [], [], [], [], [], []];
+  for (const w of WEEKLY){
+    /* A "daily" or multi-day rule belongs in every weekday column it
+       actually runs on, not just whichever happens to come up next. */
+    const days = w.day === "daily" ? [0, 1, 2, 3, 4, 5, 6] : Array.isArray(w.day) ? w.day : [w.day];
+    for (const d of days){
+      /* This week's occurrence for that weekday — not just the next
+         future one — so a day already run this week still shows (greyed
+         out) instead of silently jumping ahead to next week's. */
+      const targetKey = keyAdd(mondayKey, (d + 6) % 7);
+      const occ = OCC.filter(function(o){ return o.weeklyId === w.id && o.key === targetKey; })[0];
+      if (occ) groups[d].push({ w: w, o: occ, past: occ.instant < n });
+    }
+  }
+  const order = [1, 2, 3, 4, 5, 6, 0];   // Monday first
+
+  /* Whichever occurrence on the board is soonest to start (or still within
+     its "running now" grace window) is "up next" — the same event Next Up
+     would show as its hero, if it happens to be a regular weekly one. */
+  const grace = CONFIG.liveGraceMins * 60000;
+  let nextUid = null, nextAt = Infinity;
+  for (const list of groups){
+    for (const it of list){
+      if (it.o.instant + grace > n && it.o.instant < nextAt){ nextAt = it.o.instant; nextUid = it.o.uid; }
+    }
+  }
+
+  /* A rollover event (e.g. "Monday Midnight Million") has a real instant of
+     00:00 the next day, but reads as the last event of the branded day, not
+     the first — so it sorts as if it were the final minute of the day
+     instead of the first. */
+  const sortMinutes = function(it){
+    const p = zoneParts(it.o.instant, VIEW_TZ), mins = p.h * 60 + p.mi;
+    return it.w.rollover ? mins + 1440 : mins;
+  };
+  const cards = order.map(function(d){
+    const items = groups[d].slice().sort(function(a, b){ return sortMinutes(a) - sortMinutes(b); });
+    const body = items.length
+      ? "<ul>" + items.map(function(it){
+          const o = it.o;
+          const isNext = o.uid === nextUid;
+          const past = it.past && !isNext;
+          const tags = [];
+          if (o.category === "club" && o.club) tags.push(CLUBS[o.club] || o.club);
+          if (o.speed && SPEEDS[o.speed]) tags.push(SPEEDS[o.speed]);
+          tags.push(buyInText(o));
+          return '<li class="' + (past ? "is-past" : "") + (isNext ? " is-next" : "") + '"><span class="t">' + esc(fmtTime(o.instant)) + "</span>" +
+                 '<span class="n"><b>' + esc(it.w.name) + "</b>" +
+                 "<small>" + esc(tags.join(" · ")) +
+                   (past ? " · Already run this week" : (isNext ? " · Up next" : "")) + "</small></span></li>";
+        }).join("") + "</ul>"
+      : '<p class="empty">No regular events</p>';
+    return '<div class="wkday' + (d === todayDow ? " is-today" : "") + '">' +
+             "<h3>" + esc(DOW_LONG[d]) + (d === todayDow ? " — Today" : "") + "</h3>" + body +
+           "</div>";
+  }).join("");
+
+  $("#p-weekly").innerHTML =
+    secHead("Usual weekly schedule", "Recurring events, in Eastern Time") +
+    '<p class="note" style="margin:0 0 1.2rem">These run every week. All tournaments use a ' +
+    'dynamic blind structure with late registration open, unless noted otherwise below. ' +
+    'One-off changes and highlight series are shown in the other tabs.</p>' +
+    '<div class="wk">' + cards + "</div>";
+}
+
+/* ---------------------------------------------------------- panel: CLUBS -- */
+function renderClubs(){
+  const n = nowMs();
+  const keys = Object.keys(CLUBS);
+  let html = '<div class="sec-h club-hero-h">' +
+    '<img class="club-logo" src="assets/PokerStarsVR-TheClub_Isolated_Logo.png" alt="The Club" width="280" height="120">' +
+    '<span class="sub">Membership required to register</span></div>';
+
+  const any = OCC.some(function(o){ return o.category === "club"; });
+  if (!any){
+    html += emptyState("No Club Exclusive events scheduled", "Check back soon.");
+  } else {
+    html += keys.map(function(k){
+      const evs = OCC.filter(function(o){ return o.club === k && o.instant + CONFIG.liveGraceMins * 60000 > n; })
+                     .slice(0, 8);
+      return '<div class="sec">' +
+        '<div class="sec-h"><h2 style="color:var(--c-club)">' + esc(CLUBS[k]) + "</h2></div>" +
+        (evs.length
+          ? '<div class="list">' + evs.map(function(o){ return evCard(o, { ns:"-c", showDate:true, noClub:true }); }).join("") + "</div>"
+          : emptyState("Nothing upcoming for " + CLUBS[k], "")) +
+      "</div>";
+    }).join("");
+
+    const orphan = OCC.filter(function(o){ return o.category === "club" && !o.club && o.instant > n; });
+    if (orphan.length)
+      html += '<div class="sec">' + secHead("Other club events", "") +
+        '<div class="list">' + orphan.map(function(o){ return evCard(o, { ns:"-co", showDate:true }); }).join("") + "</div></div>";
+  }
+  $("#p-clubs").innerHTML = html;
+}
+
+/* ----------------------------------------------------- panel: HIGHLIGHTS -- */
+/* Highlights is two views sharing one tab: a browsable list of series, and a
+   full dedicated page per series (week picker, type/speed filters, the whole
+   day-by-day schedule) that a player navigates INTO rather than expanding
+   in place. HL_VIEW tracks which one is showing; it isn't persisted across
+   a reload, same as the other in-page navigation state below. */
+let HL_VIEW = { mode:"list" };
+
+const SERIES_WEEK_SEL = {};
+/* Per-series so picking "Main Events" in one series doesn't silently apply
+   (and confuse) another series with a totally different event mix. */
+const SERIES_FILTER = {};
+function seriesFilterOf(id){
+  if (!SERIES_FILTER[id]) SERIES_FILTER[id] = { type:null, speed:null, prizes:false };
+  return SERIES_FILTER[id];
+}
+
+function defaultWeekIdx(weeks, tk){
+  let idx = weeks.findIndex(function(w){ return tk >= w.start && tk <= w.end; });
+  if (idx < 0) idx = weeks.findIndex(function(w){ return w.start > tk; });
+  if (idx < 0) idx = weeks.length - 1;
+  return idx;
+}
+
+/* Shared by the Highlights list, the series detail page, and the Next Up
+   teaser — one series never disagrees with itself about its own status. */
+function seriesStatus(s, n, tk){
+  const evs = OCC.filter(function(o){ return o.seriesId === s.id; });
+  if (s.end && tk > s.end) return { st:"done", label:"Finished", evs:evs };
+  if (s.start && tk >= s.start){
+    const left = evs.filter(function(o){ return o.instant > n; }).length;
+    return { st:"now",
+      label: "Running now" + (left ? " · " + left + " event" + (left === 1 ? "" : "s") + " left" : ""),
+      evs:evs };
+  }
+  const first = evs.filter(function(o){ return o.instant > n; })[0];
+  if (!first) return { st:"soon", label:"Upcoming", evs:evs };
+  const days = keyDiff(tk, first.key);
+  return { st:"soon",
+    label: days <= 0 ? "Starts today" : days === 1 ? "Starts tomorrow" : "Starts in " + days + " days",
+    evs:evs };
+}
+
+/* Compact clickable row for the Next Up tab — a teaser, not the schedule. */
+function seriesTeaser(s, n, tk){
+  const r = seriesStatus(s, n, tk);
+  /* Same article > button nesting as a real event card (not one element
+     wearing both classes) — .ev-head already resets `border` to lay down
+     its own left accent stripe, which would fight .ev's full border if
+     both classes landed on the same element. */
+  return '<article class="ev hl-teaser"' + seriesThemeAttr(s) + ' style="--accent:var(--a-' + esc(s.accent || "gold") + ')">' +
+    '<button class="ev-head" data-goto-series="' + esc(s.id) + '">' +
+      '<span class="ev-time"><b>' + esc(s.short || "") + "</b></span>" +
+      '<span class="ev-main">' +
+        '<span class="ev-name">' + esc(s.name) + "</span>" +
+        '<span class="ev-meta"><span class="meta-text">' + esc(r.label) +
+          (r.evs.length ? " · " + r.evs.length + " events" : "") + "</span></span>" +
+      "</span>" +
+      '<span class="ev-chev" aria-hidden="true">→</span>' +
+    "</button>" +
+  "</article>";
+}
+
+function renderHighlights(){
+  if (HL_VIEW.mode === "series" && SERIES.some(function(s){ return s.id === HL_VIEW.id; }))
+    renderSeriesDetail(HL_VIEW.id);
+  else {
+    HL_VIEW = { mode:"list" };
+    renderHighlightsList();
+  }
+}
+
+function renderHighlightsList(){
+  const n = nowMs(), tk = keyOf(n);
+  let html = secHead("Highlight events", "Series, festivals and special occasions");
+
+  if (!SERIES.length){
+    html += emptyState("No highlight series scheduled", "Check back soon.");
+    $("#p-highlights").innerHTML = html;
+    return;
+  }
+
+  const sorted = SERIES.slice().sort(function(a, b){ return String(a.start).localeCompare(String(b.start)); });
+
+  html += sorted.map(function(s){
+    const r = seriesStatus(s, n, tk);
+    const range = (s.start && s.end)
+      ? fmtKey(s.start, { day:"numeric", month:"short" }) + " → " +
+        fmtKey(s.end,   { day:"numeric", month:"short", year:"numeric" })
+      : "";
+    const prized = r.evs.filter(function(o){ return hasPrizes(o.prizes); }).length;
+    const summary = [
+      r.evs.length + (r.evs.length === 1 ? " event" : " events"),
+      prized ? prized + " with prizing" : null
+    ].filter(Boolean).join(" · ");
+
+    return '<button class="ser ser-open"' + seriesThemeAttr(s) + ' data-goto-series="' + esc(s.id) +
+      '" style="--accent:var(--a-' + esc(s.accent || "gold") + ')">' +
+      '<span class="ser-h">' +
+        '<span class="top"><span class="tag">' + esc(seriesTagLabel(s)) + "</span></span>" +
+        "<span class=\"h3-like\">" + esc(s.name) + "</span>" +
+        (range ? '<span class="range">' + esc(range) + "</span>" : "") +
+        (s.blurb ? '<span class="blurb">' + esc(s.blurb) + "</span>" : "") +
+        '<span class="ser-foot">' +
+          '<span class="st ' + r.st + '">' + esc(r.label) + "</span>" +
+          '<span class="ser-cta">' + (r.evs.length ? esc(summary) + " · View full schedule" : "View schedule") +
+            ' <span class="ev-chev" aria-hidden="true">→</span></span>' +
+        "</span>" +
+      "</span>" +
+    "</button>";
+  }).join("");
+
+  html += HIGHLIGHT_ANNOUNCEMENTS.map(function(a){
+    return '<div class="ser"' + seriesThemeAttr(a) + ' style="--accent:var(--a-' + esc(a.accent || "gold") + ')">' +
+      '<span class="ser-h">' +
+        '<span class="top"><span class="tag">' + esc(a.short || "EVENT") + "</span></span>" +
+        "<span class=\"h3-like\">" + esc(a.name) + "</span>" +
+        '<span class="range">' + esc(a.when) + "</span>" +
+        '<span class="blurb">' + esc(a.note) + "</span>" +
+      "</span>" +
+    "</div>";
+  }).join("");
+
+  html += LOCKED_HIGHLIGHTS.map(function(l){
+    return '<div class="ser is-locked" aria-disabled="true">' +
+      '<span class="ser-h">' +
+        '<span class="top"><span class="tag">' + esc(l.when) + "</span>" +
+          '<span class="lock" aria-hidden="true">🔒</span></span>' +
+        "<span class=\"h3-like\">" + esc(l.name) + "</span>" +
+        '<span class="blurb">' + esc(l.note) + "</span>" +
+      "</span>" +
+    "</div>";
+  }).join("");
+
+  $("#p-highlights").innerHTML = html;
+}
+
+function renderSeriesDetail(id){
+  const s = SERIES.find(function(x){ return x.id === id; });
+  const n = nowMs(), tk = keyOf(n);
+  const r = seriesStatus(s, n, tk);
+  const range = (s.start && s.end)
+    ? fmtKey(s.start, { day:"numeric", month:"short" }) + " → " +
+      fmtKey(s.end,   { day:"numeric", month:"short", year:"numeric" })
+    : "";
+
+  let bodyInner;
+  if (!r.evs.length){
+    bodyInner = emptyState("Schedule to be announced", "");
+  } else {
+    let weekTabs = "", scoped = r.evs;
+    if (s.weeks && s.weeks.length > 1){
+      const weeks = s.weeks.map(function(w, i){
+        return { idx: i, label: w.label, sub: w.sub, start: w.start, end: w.end,
+                 events: r.evs.filter(function(o){ return o.key >= w.start && o.key <= w.end; }) };
+      });
+      if (SERIES_WEEK_SEL[s.id] == null) SERIES_WEEK_SEL[s.id] = defaultWeekIdx(weeks, tk);
+      const sel = Math.min(SERIES_WEEK_SEL[s.id], weeks.length - 1);
+      weekTabs = '<div class="filters" role="group" aria-label="Choose a week of ' + esc(s.name) + '">' +
+        weeks.map(function(w){
+          return '<button class="chip" aria-pressed="' + (w.idx === sel ? "true" : "false") +
+            '" data-series="' + esc(s.id) + '" data-week="' + w.idx + '">' +
+            esc(w.label + (w.sub ? " · " + w.sub : "")) + " (" + w.events.length + ")</button>";
+        }).join("") + "</div>";
+      scoped = weeks[sel].events;
+    }
+
+    const f = seriesFilterOf(s.id);
+    const typesPresent = [...new Set(r.evs.reduce(function(a, o){ return a.concat(eventTypeTags(o)); }, []))];
+    const speedsPresent = [...new Set(r.evs.map(function(o){ return o.speed; }).filter(Boolean))]
+      .filter(function(k){ return HIDDEN_SPEED_FILTERS.indexOf(k) < 0; });
+    const anyPrized = r.evs.some(function(o){ return hasPrizes(o.prizes); });
+
+    const fChip = function(key, val, label, on){
+      return '<button class="chip" aria-pressed="' + (on ? "true" : "false") +
+        '" data-series="' + esc(s.id) + '" data-sfk="' + key + '" data-sfv="' + esc(String(val)) + '">' +
+        esc(label) + "</button>";
+    };
+    let filterRows = "";
+    if (typesPresent.length)
+      filterRows += '<div class="filters" role="group" aria-label="Filter ' + esc(s.name) + ' by event type">' +
+        fChip("type", "", "All types", !f.type) +
+        typesPresent.map(function(t){ return fChip("type", t, TYPE_LABELS[t] || t, f.type === t); }).join("") +
+      "</div>";
+    if (speedsPresent.length || anyPrized)
+      filterRows += '<div class="filters" role="group" aria-label="Filter ' + esc(s.name) + ' by speed and prizing">' +
+        fChip("speed", "", "Any speed", !f.speed) +
+        speedsPresent.map(function(sp){ return fChip("speed", sp, SPEEDS[sp] || sp, f.speed === sp); }).join("") +
+        (anyPrized ? fChip("prizes", "1", "★ Has prizes", f.prizes) : "") +
+      "</div>";
+
+    let filtered = scoped;
+    if (f.type) filtered = filtered.filter(function(o){ return eventTypeTags(o).indexOf(f.type) >= 0; });
+    if (f.speed) filtered = filtered.filter(function(o){ return o.speed === f.speed; });
+    if (f.prizes) filtered = filtered.filter(function(o){ return hasPrizes(o.prizes); });
+
+    bodyInner = weekTabs + filterRows + (filtered.length
+      ? dayBlocks(filtered, { ns:"-s", noSeries:true }, null, s.dayTags)
+      : emptyState("Nothing matches those filters",
+          (f.type || f.speed || f.prizes) ? "Try clearing a filter, or check the other week." : ""));
+  }
+
+  const html =
+    '<button class="hl-back" data-goto-list="1">← All Highlights</button>' +
+    '<div class="ser"' + seriesThemeAttr(s) + ' style="--accent:var(--a-' + esc(s.accent || "gold") + ')">' +
+      '<div class="ser-h">' +
+        '<div class="top"><span class="tag">' + esc(seriesTagLabel(s)) + "</span></div>" +
+        "<h2>" + esc(s.name) + "</h2>" +
+        (range ? '<p class="range">' + esc(range) + "</p>" : "") +
+        (s.blurb ? '<p class="blurb">' + esc(s.blurb) + "</p>" : "") +
+        '<div><span class="st ' + r.st + '">' + esc(r.label) + "</span></div>" +
+      "</div>" +
+    "</div>" +
+    '<div class="hl-sched">' + bodyInner + "</div>";
+
+  $("#p-highlights").innerHTML = html;
+}
+
+/* ------------------------------------------------------------ panel: ALL -- */
+const FILTERS = { cat:null, speed:null, prizes:false, free:false };
+/* "All Events" is capped to a window of days so a long horizon doesn't turn
+   into one huge scroll; "Show more" grows it. Resets whenever a filter
+   changes, since a fresh filter should start from the top again. */
+const ALL_PAGE_DAYS = 7;
+let allVisibleDays = ALL_PAGE_DAYS;
+
+function renderAll(){
+  const n = nowMs();
+  let list = OCC.filter(function(o){ return o.instant + CONFIG.liveGraceMins * 60000 > n; });
+
+  if (FILTERS.cat)    list = list.filter(function(o){ return o.category === FILTERS.cat; });
+  if (FILTERS.speed)  list = list.filter(function(o){ return o.speed === FILTERS.speed; });
+  if (FILTERS.prizes) list = list.filter(function(o){ return hasPrizes(o.prizes); });
+  if (FILTERS.free)   list = list.filter(function(o){ return o.buyIn === 0; });
+
+  const chip = function(k, v, label){
+    const on = FILTERS[k] === v || (k === "prizes" && FILTERS.prizes && v === true) ||
+               (k === "free" && FILTERS.free && v === true);
+    return '<button class="chip" aria-pressed="' + (on ? "true" : "false") +
+           '" data-fk="' + k + '" data-fv="' + esc(String(v)) + '">' + esc(label) + "</button>";
+  };
+  const speedKeys = Object.keys(SPEEDS).filter(function(k){
+    return HIDDEN_SPEED_FILTERS.indexOf(k) < 0 && OCC.some(function(o){ return o.speed === k; }); });
+
+  const filters = '<div class="filters" role="group" aria-label="Filter events">' +
+      chip("cat", "", "All types") +
+      chip("cat", "weekly", "Weekly") +
+      chip("cat", "club", "Club") +
+      chip("cat", "highlight", "Highlights") +
+    "</div>" +
+    '<div class="filters" role="group" aria-label="Filter by speed and prizing">' +
+      chip("speed", "", "Any speed") +
+      speedKeys.map(function(k){ return chip("speed", k, SPEEDS[k]); }).join("") +
+      chip("prizes", true, "★ Has prizes") +
+      chip("free", true, "Freeroll only") +
+    "</div>";
+
+  const count = list.length + (list.length === 1 ? " event" : " events");
+  let body;
+  if (!list.length){
+    body = emptyState("Nothing matches those filters", "Try clearing a filter to see more events.");
+  } else {
+    const paged = dayBlocks(list, { ns:"-a" }, allVisibleDays);
+    body = paged.html;
+    if (paged.remainingDays > 0)
+      body += '<button class="chip" id="all-more" style="margin-top:.4rem;width:100%;justify-content:center">' +
+        "Show " + paged.remainingDays + " more day" + (paged.remainingDays === 1 ? "" : "s") +
+        " (" + paged.remainingEvents + " more event" + (paged.remainingEvents === 1 ? "" : "s") + ")</button>";
+  }
+  $("#p-all").innerHTML = secHead("All upcoming events", count) + filters + body;
+}
+
+/* --------------------------------------------------------------- tabs ----- */
+const TABS = [
+  { id:"next",       label:"Next Up",    count: function(){ return null; } },
+  { id:"today",      label:"Today",      count: function(){ const tk = keyOf(nowMs());
+      return OCC.filter(function(o){ return o.key === tk && statusOf(o) !== "past"; }).length; } },
+  { id:"weekly",     label:"Weekly",     count: function(){ return WEEKLY.length; } },
+  { id:"clubs",      label:"The Club",   count: function(){ const n = nowMs();
+      return OCC.filter(function(o){ return o.category === "club" && o.instant > n; }).length; } },
+  { id:"highlights", label:"Highlights", count: function(){
+      return SERIES.length + HIGHLIGHT_ANNOUNCEMENTS.length + LOCKED_HIGHLIGHTS.length; } },
+  { id:"all",        label:"All Events",  count: function(){ const n = nowMs();
+      return OCC.filter(function(o){ return o.instant > n; }).length; } }
+];
+let ACTIVE = "next";
+
+function renderTabs(){
+  $("#tabs").innerHTML = TABS.map(function(t){
+    const c = t.count();
+    return '<button class="tab" role="tab" id="t-' + t.id + '" aria-controls="p-' + t.id + '" ' +
+           'aria-selected="' + (t.id === ACTIVE ? "true" : "false") + '" ' +
+           'tabindex="' + (t.id === ACTIVE ? "0" : "-1") + '" data-tab="' + t.id + '">' +
+           esc(t.label) + (c ? '<span class="n">' + c + "</span>" : "") + "</button>";
+  }).join("");
+}
+function selectTab(id, focus){
+  ACTIVE = id;
+  for (const t of TABS){
+    const btn = $("#t-" + t.id), pan = $("#p-" + t.id);
+    const on = t.id === id;
+    btn.setAttribute("aria-selected", on ? "true" : "false");
+    btn.tabIndex = on ? 0 : -1;
+    pan.hidden = !on;
+  }
+  if (focus) $("#t-" + id).focus();
+  try { localStorage.setItem("vi-mtt-tab", id); } catch (e) {}
+}
+
+/* ---------------------------------------------------------- countdown ----- */
+function tickCountdown(){
+  const box = $("#cd");
+  if (!box) return;
+  const at = +box.dataset.at, diff = at - nowMs();
+  if (diff <= 0){
+    if (!box.classList.contains("running")){ renderNext(); renderTabs(); return; }
+    box.innerHTML = '<div class="msg">Late registration may still be open</div>';
+    return;
+  }
+  const s = Math.floor(diff / 1000);
+  const d = Math.floor(s / 86400), h = Math.floor(s % 86400 / 3600),
+        m = Math.floor(s % 3600 / 60), sec = s % 60;
+  const u = function(v, l){ return '<div class="u"><b>' + pad(v) + "</b><small>" + l + "</small></div>"; };
+  const parts = d > 0 ? [u(d, "days"), u(h, "hrs"), u(m, "min")]
+              : h > 0 ? [u(h, "hrs"), u(m, "min"), u(sec, "sec")]
+                      : [u(m, "min"), u(sec, "sec")];
+  box.innerHTML = parts.join("") +
+    '<span class="sr">Starts at ' + esc(fmtTime(at)) + " " + esc(zoneAbbr(at)) + "</span>";
+}
+
+/* ---------------------------------------------------------------- boot ---- */
+function renderAllPanels(){
+  renderNext(); renderToday(); renderWeekly(); renderClubs(); renderHighlights(); renderAll();
+  renderTabs();
+  selectTab(ACTIVE, false);
+}
+
+function boot(){
+  OCC = buildOccurrences();
+
+  $("#footertz").textContent = "Eastern Time (" + zoneAbbr(nowMs()) + ")";
+  $("#lastup").textContent = CONFIG.lastUpdated
+    ? fmtKey(CONFIG.lastUpdated, { day:"numeric", month:"long", year:"numeric" })
+    : "—";
+
+  try {
+    const saved = localStorage.getItem("vi-mtt-tab");
+    if (saved && TABS.some(function(t){ return t.id === saved; })) ACTIVE = saved;
+  } catch (e) {}
+
+  renderAllPanels();
+
+  document.addEventListener("click", function(ev){
+    /* Highlights: a series card or a Next Up teaser navigates INTO that
+       series' own full schedule page; the back button returns to the
+       browsable list. Checked before the generic expand toggle below,
+       since a teaser button also carries .ev-head (for its layout/styling)
+       but must navigate, not expand. Both re-render Highlights, and a
+       teaser (clickable from the Next Up tab) also switches tabs. */
+    const gotoSeries = ev.target.closest("[data-goto-series]");
+    if (gotoSeries){
+      HL_VIEW = { mode:"series", id: gotoSeries.dataset.gotoSeries };
+      renderHighlights();
+      selectTab("highlights", false);
+      return;
+    }
+    const gotoList = ev.target.closest("[data-goto-list]");
+    if (gotoList){
+      HL_VIEW = { mode:"list" };
+      renderHighlights();
+      return;
+    }
+
+    /* Expand / collapse — delegated, so re-rendered cards keep working. */
+    const head = ev.target.closest(".ev-head");
+    if (head){
+      const body = document.getElementById(head.getAttribute("aria-controls"));
+      const open = head.getAttribute("aria-expanded") === "true";
+      head.setAttribute("aria-expanded", open ? "false" : "true");
+      if (body) body.hidden = open;
+      return;
+    }
+    const tab = ev.target.closest(".tab");
+    if (tab){ selectTab(tab.dataset.tab, false); return; }
+
+    /* A week sub-tab inside a series — same "chip" look as a filter, but
+       switches which week of that one series is showing rather than
+       filtering the whole list. */
+    const wkChip = ev.target.closest(".chip[data-week]");
+    if (wkChip){
+      SERIES_WEEK_SEL[wkChip.dataset.series] = +wkChip.dataset.week;
+      renderHighlights();
+      return;
+    }
+
+    /* Event-type / speed / prizing filter chips inside a series body. */
+    const sfChip = ev.target.closest(".chip[data-sfk]");
+    if (sfChip){
+      const f = seriesFilterOf(sfChip.dataset.series);
+      const k = sfChip.dataset.sfk, v = sfChip.dataset.sfv;
+      if (k === "prizes") f.prizes = !f.prizes;
+      else f[k] = v === "" ? null : v;
+      renderHighlights();
+      return;
+    }
+
+    const chip = ev.target.closest(".chip[data-fk]");
+    if (chip){
+      const k = chip.dataset.fk, v = chip.dataset.fv;
+      if (k === "prizes" || k === "free") FILTERS[k] = !FILTERS[k];
+      else FILTERS[k] = v === "" ? null : v;
+      allVisibleDays = ALL_PAGE_DAYS;
+      renderAll();
+      return;
+    }
+
+    if (ev.target.closest("#all-more")){
+      allVisibleDays += ALL_PAGE_DAYS;
+      renderAll();
+      return;
+    }
+  });
+
+  /* Arrow-key tab navigation — matters for controller/d-pad use in a headset. */
+  $("#tabs").addEventListener("keydown", function(ev){
+    const i = TABS.findIndex(function(t){ return t.id === ACTIVE; });
+    let j = -1;
+    if (ev.key === "ArrowRight") j = (i + 1) % TABS.length;
+    else if (ev.key === "ArrowLeft") j = (i - 1 + TABS.length) % TABS.length;
+    else if (ev.key === "Home") j = 0;
+    else if (ev.key === "End") j = TABS.length - 1;
+    if (j >= 0){ ev.preventDefault(); selectTab(TABS[j].id, true); }
+  });
+
+  setInterval(tickCountdown, 1000);
+  /* Re-render every minute so "Today", "Started" and counts stay honest
+     without a page refresh. */
+  setInterval(function(){
+    const tk = keyOf(nowMs());
+    if (tk !== boot._day){ boot._day = tk; OCC = buildOccurrences(); }
+    renderToday(); renderTabs(); selectTab(ACTIVE, false);
+  }, 60000);
+  boot._day = keyOf(nowMs());
+
+  /* One typo in a weekly rule produces an issue per generated occurrence, so
+     collapse to distinct problems before reporting them. */
+  const UNIQ = Array.from(new Set(ISSUES));
+
+  if (DEBUG){
+    const n = $("#notices");
+    n.innerHTML = '<div class="notice dbg"><h3>Debug — data check</h3>' +
+      (UNIQ.length
+        ? "<p>" + UNIQ.length + " issue" + (UNIQ.length === 1 ? "" : "s") + " found:</p><ul>" +
+          UNIQ.map(function(i){ return "<li>" + esc(i) + "</li>"; }).join("") + "</ul>"
+        : "<p>No problems found in the schedule data.</p>") +
+      "<p style=\"margin-top:.7rem\">Occurrences generated: <code>" + OCC.length + "</code> · " +
+      "Viewer timezone: <code>" + esc(VIEW_TZ) + "</code> · " +
+      "Now: <code>" + esc(new Date(nowMs()).toISOString()) + "</code></p>" +
+      "<p style=\"margin-top:.7rem\">Remove <code>?debug=1</code> to hide this panel.</p></div>";
+  } else if (UNIQ.length){
+    console.warn("[VI schedule] " + UNIQ.length +
+      " data issue(s). Add ?debug=1 to the URL to see them:\n - " + UNIQ.join("\n - "));
+  }
+}
+
+/* A bad data edit must never leave players looking at a blank page.
+   This handles RUNTIME errors. Syntax errors are caught by the guard script
+   above plus the sentinel check below, because a script that fails to parse
+   never reaches this line. */
+try {
+  boot();
+  window.__VI_OK__ = true;
+} catch (err){
+  console.error(err);
+  window.__VI_FAIL__(err && err.message ? err.message : String(err));
+}
+</script>
+
+<!-- If the app script above failed to PARSE it never ran, so the sentinel is
+     still false. This is the last line of defence against a blank page. -->
+<script>
+if (!window.__VI_OK__) window.__VI_FAIL__(window.__VI_ERR__);
+</script>
+</body>
+</html>
