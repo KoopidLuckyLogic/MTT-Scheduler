@@ -122,6 +122,23 @@ body{
   background-attachment:fixed;
   -webkit-font-smoothing:antialiased;
 }
+/* body is the real scroll container (see above) — made deliberately thick
+   and gold so it's easy to see and grab, especially on a touch/controller-
+   driven or VR-headset browser. Chrome/Edge/Safari/Opera (almost all
+   traffic) get a genuinely wider, custom-coloured bar from the pseudo-
+   elements below. Firefox has no standard way to make a scrollbar wider
+   than its OS default — `scrollbar-width` only offers auto/thin/none — so
+   it keeps its native scrollbar; there's no CSS that changes that. Note:
+   declaring `scrollbar-color`/`scrollbar-width` on this element would make
+   Chromium ignore the ::-webkit-scrollbar-* width below entirely, so they
+   are deliberately left unset here. */
+body::-webkit-scrollbar{ width:18px; }
+body::-webkit-scrollbar-track{ background:var(--surface); }
+body::-webkit-scrollbar-thumb{
+  background:var(--gold-mid); border-radius:10px;
+  border:4px solid var(--surface);
+}
+body::-webkit-scrollbar-thumb:hover{ background:var(--gold-bright); }
 
 h1,h2,h3{ margin:0; line-height:1.2; font-weight:650; }
 p{ margin:0; }
