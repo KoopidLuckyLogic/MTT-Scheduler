@@ -98,12 +98,19 @@
 
 /* Fluid base: ~18px on a phone, ~22px on a large/VR viewport.
    Every other size is in rem, so nothing falls below 16px. */
-html{ font-size:clamp(18px, 0.55vw + 16.4px, 22px); -webkit-text-size-adjust:100%; }
+html{
+  font-size:clamp(18px, 0.55vw + 16.4px, 22px); -webkit-text-size-adjust:100%;
+  /* Exactly one element owns scrolling: body. Without this, some embedding
+     hosts (a preview pane, a webview) can independently scroll the html
+     element too, so the page appears to have two scrollbars. */
+  height:100%; overflow:hidden;
+}
 
 *,*::before,*::after{ box-sizing:border-box; }
 
 body{
   margin:0;
+  height:100%; overflow-y:auto; overflow-x:hidden;
   font-family:var(--ff);
   font-size:1rem;
   line-height:1.55;
