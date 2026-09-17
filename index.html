@@ -1984,6 +1984,16 @@ function renderTabs(){
            esc(t.label) + (c ? '<span class="n">' + c + "</span>" : "") + "</button>";
   }).join("");
 }
+/* Scrolls the page's one real scroll container (body — see the html/body
+   rule near the top of the CSS) back to the top. Called only on an actual
+   navigation — switching tabs, or jumping into/out of a series' schedule —
+   never on the once-a-minute background refresh, which reuses the same tab
+   and must never yank the reader's scroll position. */
+function scrollToTop(){
+  document.body.scrollTop = 0;
+  document.documentElement.scrollTop = 0;
+}
+
 function selectTab(id, focus){
   ACTIVE = id;
   for (const t of TABS){
@@ -2052,12 +2062,14 @@ function boot(){
       HL_VIEW = { mode:"series", id: gotoSeries.dataset.gotoSeries };
       renderHighlights();
       selectTab("highlights", false);
+      scrollToTop();
       return;
     }
     const gotoList = ev.target.closest("[data-goto-list]");
     if (gotoList){
       HL_VIEW = { mode:"list" };
       renderHighlights();
+      scrollToTop();
       return;
     }
 
@@ -2071,7 +2083,12 @@ function boot(){
       return;
     }
     const tab = ev.target.closest(".tab");
-    if (tab){ selectTab(tab.dataset.tab, false); return; }
+    if (tab){
+      const changing = tab.dataset.tab !== ACTIVE;
+      selectTab(tab.dataset.tab, false);
+      if (changing) scrollToTop();
+      return;
+    }
 
     /* A week sub-tab inside a series — same "chip" look as a filter, but
        switches which week of that one series is showing rather than
@@ -2119,7 +2136,7 @@ function boot(){
     else if (ev.key === "ArrowLeft") j = (i - 1 + TABS.length) % TABS.length;
     else if (ev.key === "Home") j = 0;
     else if (ev.key === "End") j = TABS.length - 1;
-    if (j >= 0){ ev.preventDefault(); selectTab(TABS[j].id, true); }
+    if (j >= 0){ ev.preventDefault(); selectTab(TABS[j].id, true); scrollToTop(); }
   });
 
   setInterval(tickCountdown, 1000);
