@@ -102,15 +102,21 @@ html{
   font-size:clamp(18px, 0.55vw + 16.4px, 22px); -webkit-text-size-adjust:100%;
   /* Exactly one element owns scrolling: body. Without this, some embedding
      hosts (a preview pane, a webview) can independently scroll the html
-     element too, so the page appears to have two scrollbars. */
-  height:100%; overflow:hidden;
+     element too, so the page appears to have two scrollbars.
+     `vh` measures the real viewport directly; `%` needs every element in
+     the containing-block chain to already have a definite height, which
+     silently fails in some window states (e.g. a non-maximized window in
+     an embedding host) and was the actual cause of the double scrollbar
+     coming back at those sizes. `dvh` (where supported) additionally
+     tracks a mobile browser's address bar showing/hiding. */
+  height:100vh; height:100dvh; overflow:hidden;
 }
 
 *,*::before,*::after{ box-sizing:border-box; }
 
 body{
   margin:0;
-  height:100%; overflow-y:auto; overflow-x:hidden;
+  height:100vh; height:100dvh; overflow-y:auto; overflow-x:hidden;
   font-family:var(--ff);
   font-size:1rem;
   line-height:1.55;
