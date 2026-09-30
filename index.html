@@ -858,7 +858,11 @@ const SERIES = [
   {
     id:"spooky-stacks-2026", name:"Spooky Stacks", short:"SPOOKY", accent:"orange",
     start:"2026-10-15", end:"2026-10-25",
-    blurb:"Two runs this October: October 15–18 and October 22–25. Full schedule to be announced.",
+    blurb:"Full schedule to be announced.",
+    weeks:[
+      { label:"Part 1", start:"2026-10-15", end:"2026-10-18" },
+      { label:"Part 2", start:"2026-10-22", end:"2026-10-25" }
+    ],
     events:[]
   }
 ];
@@ -1617,6 +1621,23 @@ function defaultWeekIdx(weeks, tk){
   return idx;
 }
 
+/* A series' date range, for both the list card and the detail page. When
+   `weeks` is set (even before any events exist — e.g. Spooky Stacks' two
+   October runs), show each part's own range labelled instead of one
+   overall span, so "two separate runs" doesn't read as one continuous
+   block with a gap in the middle. */
+function seriesRangeText(s){
+  if (s.weeks && s.weeks.length > 1)
+    return s.weeks.map(function(w){
+      return (w.label ? w.label + ": " : "") +
+        fmtKey(w.start, { day:"numeric", month:"short" }) + "–" +
+        fmtKey(w.end,   { day:"numeric", month:"short" });
+    }).join(" · ");
+  if (!s.start || !s.end) return "";
+  return fmtKey(s.start, { day:"numeric", month:"short" }) + " → " +
+         fmtKey(s.end,   { day:"numeric", month:"short", year:"numeric" });
+}
+
 /* Shared by the Highlights list, the series detail page, and the Next Up
    teaser — one series never disagrees with itself about its own status. */
 function seriesStatus(s, n, tk){
@@ -1679,10 +1700,7 @@ function renderHighlightsList(){
 
   html += sorted.map(function(s){
     const r = seriesStatus(s, n, tk);
-    const range = (s.start && s.end)
-      ? fmtKey(s.start, { day:"numeric", month:"short" }) + " → " +
-        fmtKey(s.end,   { day:"numeric", month:"short", year:"numeric" })
-      : "";
+    const range = seriesRangeText(s);
     const prized = r.evs.filter(function(o){ return hasPrizes(o.prizes); }).length;
     const summary = [
       r.evs.length + (r.evs.length === 1 ? " event" : " events"),
@@ -1734,10 +1752,7 @@ function renderSeriesDetail(id){
   const s = SERIES.find(function(x){ return x.id === id; });
   const n = nowMs(), tk = keyOf(n);
   const r = seriesStatus(s, n, tk);
-  const range = (s.start && s.end)
-    ? fmtKey(s.start, { day:"numeric", month:"short" }) + " → " +
-      fmtKey(s.end,   { day:"numeric", month:"short", year:"numeric" })
-    : "";
+  const range = seriesRangeText(s);
 
   let bodyInner;
   if (!r.evs.length){
