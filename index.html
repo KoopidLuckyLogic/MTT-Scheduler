@@ -1708,10 +1708,14 @@ function renderClubs(){
     html += emptyState("No Club Exclusive events scheduled", "Check back soon.");
   } else {
     html += keys.map(function(k){
-      const evs = OCC.filter(function(o){ return o.club === k && o.instant + CONFIG.liveGraceMins * 60000 > n; })
-                     .slice(0, 8);
+      /* Every upcoming date for this tier — a hard cap here previously hid
+         real scheduled events (e.g. a full month of Club dates silently
+         lost its last couple of entries) with no way to see the rest. */
+      const evs = OCC.filter(function(o){ return o.club === k && o.instant + CONFIG.liveGraceMins * 60000 > n; });
       return '<div class="sec">' +
-        '<div class="sec-h"><h2 style="color:var(--c-club)">' + esc(CLUBS[k]) + "</h2></div>" +
+        '<div class="sec-h"><h2 style="color:var(--c-club)">' + esc(CLUBS[k]) + "</h2>" +
+        (evs.length ? '<span class="sub">' + evs.length + " upcoming</span>" : "") +
+        "</div>" +
         (evs.length
           ? '<div class="list">' + evs.map(function(o){ return evCard(o, { ns:"-c", showDate:true, noClub:true }); }).join("") + "</div>"
           : emptyState("Nothing upcoming for " + CLUBS[k], "")) +
