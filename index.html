@@ -519,6 +519,8 @@ button.ser-open:hover{ border-color:var(--line-strong); }
 .hl-teaser[data-theme="gold"] .ev-time b{
   background:var(--grad-gold); -webkit-background-clip:text; background-clip:text; color:transparent;
 }
+/* Lucky Sevens — its Next Up teaser label in the series' red, not white. */
+.hl-teaser[data-accent="red"] .ev-time b{ color:var(--a-red); }
 /* List-card footer: status pill + a plain-text call to action, so the card
    itself signals "tap me" without a second, separate toggle control. */
 .ser-foot{ display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap;
@@ -1848,7 +1850,7 @@ function seriesTeaser(s, n, tk){
      wearing both classes) — .ev-head already resets `border` to lay down
      its own left accent stripe, which would fight .ev's full border if
      both classes landed on the same element. */
-  return '<article class="ev hl-teaser"' + seriesThemeAttr(s) + ' style="--accent:var(--a-' + esc(s.accent || "gold") + ')">' +
+  return '<article class="ev hl-teaser"' + seriesThemeAttr(s) + ' data-accent="' + esc(s.accent || "gold") + '" style="--accent:var(--a-' + esc(s.accent || "gold") + ')">' +
     '<button class="ev-head" data-goto-series="' + esc(s.id) + '">' +
       '<span class="ev-time"><b>' + esc(s.short || "") + "</b></span>" +
       '<span class="ev-main">' +
