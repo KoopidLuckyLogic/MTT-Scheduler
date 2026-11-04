@@ -166,7 +166,7 @@ normal gold/surface look.
   id:"mpt-2026-09",              // unique
   name:"Metaverse Poker Tour - Macau 2050",
   short:"MPT",                   // the small badge on each event
-  accent:"gold",                 // gold | orange | violet | teal | mpt
+  accent:"gold",                 // gold | orange | violet | teal | red | mpt
   start:"2026-09-24",
   end:"2026-09-28",
   blurb:"One or two sentences describing the series.",
