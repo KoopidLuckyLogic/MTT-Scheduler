@@ -832,6 +832,10 @@ const CLUB_SCHEDULE = [
  *   accent   "gold" | "orange" | "violet" | "teal" | "red"  (see theme tokens)
  *   start/end   "YYYY-MM-DD", used for the date range and live/upcoming state
  *   events   each needs an explicit `date`; other fields match WEEKLY
+ *   standsDown  optional; set false for a series that runs ALONGSIDE the
+ *            regular MTT schedule (e.g. a slot tournament series) instead
+ *            of replacing it. Default: the weekly ring stands down on any
+ *            day this series has an event.
  * ------------------------------------------------------------------------ */
 const SERIES = [
   {
@@ -854,6 +858,7 @@ const SERIES = [
   },
   {
     id:"lucky-sevens-2026", name:"Lucky Sevens Series", short:"LUCKY SEVENS", accent:"red",
+    standsDown:false,   // slot tournaments — the regular MTT schedule keeps running
     start:"2026-11-04", end:"2026-11-18",
     blurb:"A brand-new series, never seen before in Vegas Infinite. Every winner earns the Lucky Sevens Ring. " +
           "Play any highlight event (5M buy-in or more) to earn the Lucky Sevens Chain.",
@@ -1033,7 +1038,8 @@ const HIGHLIGHT_ANNOUNCEMENTS = [
  *
  * NOTE: you don't need a `cancelled` entry here for a highlight-series day —
  * every WEEKLY rule (other than the Nightly ones) already stands down
- * automatically on any date a SERIES has an event. OVERRIDES is only for
+ * automatically on any date a SERIES has an event (unless that series is
+ * marked `standsDown:false`). OVERRIDES is only for
  * exceptions on an otherwise-ordinary week, like the promo below.
  * ------------------------------------------------------------------------ */
 const OVERRIDES = [
@@ -1257,6 +1263,13 @@ function buildOccurrences(){
     ov.set(o.weeklyId + "|" + o.date, o);
   }
 
+  /* The specific calendar days a highlight event is actually running —
+     the usual weekly ring stands down on these (below), aside from the
+     Nightly rules, since the felts are given over to the series instead.
+     A series with `standsDown:false` (e.g. a slot tournament series that
+     runs alongside the regular MTTs) doesn't count. */
+  const highlightDates = new Set();
+
   /* Series events are always included, even beyond the weekly horizon.
      Built before the weekly ring below so we know which calendar days a
      highlight event is actually running on. */
@@ -1283,16 +1296,12 @@ function buildOccurrences(){
          it's scheduled as part of — the instant stays correct for sorting
          and countdowns; only which day-card it appears under changes. */
       const key = e.groupDate || e.date;
+      if (s.standsDown !== false) highlightDates.add(key);
       out.push(mkOcc(Object.assign({ category:"highlight" }, e), key,
         zonedToInstant(d.y, d.mo, d.d, t.h, t.mi, e.tz || null),
         { seriesId: s.id, seriesShort: s.short, seriesName: s.name, accent: s.accent }));
     }
   }
-  /* The specific calendar days a highlight event is actually running —
-     the usual weekly ring stands down on these (below), aside from the
-     Nightly rules, since the felts are given over to the series instead. */
-  const highlightDates = new Set(out.map(function(o){ return o.key; }));
-
   /* Weekly ring, expanded across the horizon. Start 7 days back — enough
      that the Weekly tab always has this whole calendar week's occurrences
      on hand (down to last Monday), even late in the week — so it can grey

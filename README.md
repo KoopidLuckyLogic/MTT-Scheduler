@@ -100,6 +100,10 @@ this happen; it's automatic. This is why adding a `SERIES` event on, say, a Frid
 that Friday's usual tournaments disappear from the Weekly tab and every other view — that's
 by design, not a bug.
 
+The exception is a series that runs *alongside* the regular tournaments rather than in place
+of them — Lucky Sevens is a slot tournament series, for example. Give that `SERIES` entry
+`standsDown:false` and the weekly ring keeps running on its days as normal.
+
 ### Prizing
 
 Three independent slots, any of which can be `null`:
