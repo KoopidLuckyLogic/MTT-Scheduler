@@ -661,7 +661,7 @@ window.__VI_FAIL__ = function(detail){
  * ========================================================================== */
 
 const CONFIG = {
-  lastUpdated: "2026-09-30",   // shown in the footer so players know it's current
+  lastUpdated: "2026-11-04",   // shown in the footer so players know it's current
   horizonDays: 35,             // how far ahead recurring weekly events are generated
   liveGraceMins: 20            // how long an event stays flagged "Running now" after start
 };
@@ -973,6 +973,151 @@ const SERIES = [
       { name:"Spooky Stacks Event 104", date:"2026-10-25", time:"21:00", tz:"America/New_York", speed:"turbo", stack:3000, buyIn:2000000, currency:"Chips", prizes:{ participation:null, winner:"Cursed Crown", extra:null } },
       { name:"Spooky Stacks Event 105", date:"2026-10-25", time:"22:00", tz:"America/New_York", speed:"hyper", stack:1500, buyIn:50000, currency:"Chips", prizes:{ participation:null, winner:"Cursed Crown", extra:null } },
       { name:"Spooky Stacks Event 106", date:"2026-10-25", time:"23:00", tz:"America/New_York", speed:"turbo", stack:1500, buyIn:300000, currency:"Chips", prizes:{ participation:null, winner:"Cursed Crown", extra:null } },
+    ]
+  },
+  {
+    id:"lucky-sevens-2026", name:"Lucky Sevens", short:"LUCKY 7S", accent:"gold",
+    start:"2026-11-04", end:"2026-11-18",
+    blurb:"Every winner earns the Lucky Sevens Ring. Play any highlight event (5M buy-in or more) to earn the Lucky Sevens Chain.",
+    weeks:[
+      { label:"Week 1", start:"2026-11-04", end:"2026-11-10" },
+      { label:"Week 2", start:"2026-11-11", end:"2026-11-18" }
+    ],
+    events:[
+      { name:"Lucky Sevens Opener", date:"2026-11-04", time:"12:00", tz:"America/New_York", buyIn:100000, currency:"Chips", prizes:{ participation:null, winner:"Lucky Sevens Ring", extra:null } },
+      { name:"Lucky Sevens Daily Spin", date:"2026-11-04", time:"14:00", tz:"America/New_York", buyIn:0, currency:"Chips", prizes:{ participation:null, winner:"Lucky Sevens Ring", extra:null } },
+      { name:"Lucky Sevens Day Shift", date:"2026-11-04", time:"15:00", tz:"America/New_York", buyIn:10000, currency:"Chips", prizes:{ participation:null, winner:"Lucky Sevens Ring", extra:null } },
+      { name:"Lucky Sevens Happy Hour", date:"2026-11-04", time:"16:00", tz:"America/New_York", buyIn:10000, currency:"Chips", prizes:{ participation:null, winner:"Lucky Sevens Ring", extra:null } },
+      { name:"Lucky Sevens Midweek Rush", date:"2026-11-04", time:"19:00", tz:"America/New_York", buyIn:750000, currency:"Chips", prizes:{ participation:null, winner:"Lucky Sevens Ring", extra:null } },
+      { name:"Lucky Sevens Last Call", date:"2026-11-04", time:"21:00", tz:"America/New_York", buyIn:500000, currency:"Chips", prizes:{ participation:null, winner:"Lucky Sevens Ring", extra:null } },
+      { name:"Lucky Sevens Late Night", date:"2026-11-04", time:"22:00", tz:"America/New_York", buyIn:200000, currency:"Chips", prizes:{ participation:null, winner:"Lucky Sevens Ring", extra:null } },
+      { name:"Lucky Sevens Midnight Spin", date:"2026-11-04", time:"23:00", tz:"America/New_York", buyIn:1000000, currency:"Chips", prizes:{ participation:null, winner:"Lucky Sevens Ring", extra:null } },
+      { name:"Lucky Sevens Night Shift", date:"2026-11-05", time:"01:00", tz:"America/New_York", buyIn:500000, currency:"Chips", prizes:{ participation:null, winner:"Lucky Sevens Ring", extra:null } },
+      { name:"Lucky Sevens Opener", date:"2026-11-05", time:"12:00", tz:"America/New_York", buyIn:500000, currency:"Chips", prizes:{ participation:null, winner:"Lucky Sevens Ring", extra:null } },
+      { name:"Lucky Sevens Daily Spin", date:"2026-11-05", time:"14:00", tz:"America/New_York", buyIn:0, currency:"Chips", prizes:{ participation:null, winner:"Lucky Sevens Ring", extra:null } },
+      { name:"Lucky Sevens Day Shift", date:"2026-11-05", time:"15:00", tz:"America/New_York", buyIn:750000, currency:"Chips", prizes:{ participation:null, winner:"Lucky Sevens Ring", extra:null } },
+      { name:"Lucky Sevens Happy Hour", date:"2026-11-05", time:"16:00", tz:"America/New_York", buyIn:1000000, currency:"Chips", prizes:{ participation:null, winner:"Lucky Sevens Ring", extra:null } },
+      { name:"Lucky Sevens Prime Time", date:"2026-11-05", time:"17:00", tz:"America/New_York", buyIn:1000000, currency:"Chips", prizes:{ participation:null, winner:"Lucky Sevens Ring", extra:null } },
+      { name:"Lucky Sevens Thunder Thursday", date:"2026-11-05", time:"19:00", tz:"America/New_York", buyIn:5000000, currency:"Chips", prizes:{ participation:"Lucky Sevens Chain", winner:"Lucky Sevens Ring", extra:null } },
+      { name:"Lucky Sevens Last Call", date:"2026-11-05", time:"21:00", tz:"America/New_York", buyIn:2500000, currency:"Chips", prizes:{ participation:null, winner:"Lucky Sevens Ring", extra:null } },
+      { name:"Lucky Sevens Late Night", date:"2026-11-05", time:"22:00", tz:"America/New_York", buyIn:2000000, currency:"Chips", prizes:{ participation:null, winner:"Lucky Sevens Ring", extra:null } },
+      { name:"Lucky Sevens Midnight Spin", date:"2026-11-05", time:"23:00", tz:"America/New_York", buyIn:2500000, currency:"Chips", prizes:{ participation:null, winner:"Lucky Sevens Ring", extra:null } },
+      { name:"Lucky Sevens Night Shift", date:"2026-11-06", time:"01:00", tz:"America/New_York", buyIn:500000, currency:"Chips", prizes:{ participation:null, winner:"Lucky Sevens Ring", extra:null } },
+      { name:"Lucky Sevens Opener", date:"2026-11-06", time:"12:00", tz:"America/New_York", buyIn:100000, currency:"Chips", prizes:{ participation:null, winner:"Lucky Sevens Ring", extra:null } },
+      { name:"Lucky Sevens Daily Spin", date:"2026-11-06", time:"14:00", tz:"America/New_York", buyIn:0, currency:"Chips", prizes:{ participation:null, winner:"Lucky Sevens Ring", extra:null } },
+      { name:"Lucky Sevens Day Shift", date:"2026-11-06", time:"15:00", tz:"America/New_York", buyIn:25000, currency:"Chips", prizes:{ participation:null, winner:"Lucky Sevens Ring", extra:null } },
+      { name:"Lucky Sevens Happy Hour", date:"2026-11-06", time:"16:00", tz:"America/New_York", buyIn:50000, currency:"Chips", prizes:{ participation:null, winner:"Lucky Sevens Ring", extra:null } },
+      { name:"Lucky Sevens Prime Time", date:"2026-11-06", time:"17:00", tz:"America/New_York", buyIn:300000, currency:"Chips", prizes:{ participation:null, winner:"Lucky Sevens Ring", extra:null } },
+      { name:"Lucky Sevens Friday Frenzy", date:"2026-11-06", time:"19:00", tz:"America/New_York", buyIn:2500000, currency:"Chips", prizes:{ participation:null, winner:"Lucky Sevens Ring", extra:null } },
+      { name:"Lucky Sevens Last Call", date:"2026-11-06", time:"21:00", tz:"America/New_York", buyIn:100000, currency:"Chips", prizes:{ participation:null, winner:"Lucky Sevens Ring", extra:null } },
+      { name:"Lucky Sevens Late Night", date:"2026-11-06", time:"22:00", tz:"America/New_York", buyIn:1000000, currency:"Chips", prizes:{ participation:null, winner:"Lucky Sevens Ring", extra:null } },
+      { name:"Lucky Sevens Midnight Frenzy", date:"2026-11-06", time:"23:00", tz:"America/New_York", buyIn:5000000, currency:"Chips", prizes:{ participation:"Lucky Sevens Chain", winner:"Lucky Sevens Ring", extra:null } },
+      { name:"Lucky Sevens Night Shift", date:"2026-11-07", time:"01:00", tz:"America/New_York", buyIn:500000, currency:"Chips", prizes:{ participation:null, winner:"Lucky Sevens Ring", extra:null } },
+      { name:"Lucky Sevens Opener", date:"2026-11-07", time:"12:00", tz:"America/New_York", buyIn:200000, currency:"Chips", prizes:{ participation:null, winner:"Lucky Sevens Ring", extra:null } },
+      { name:"Lucky Sevens Daily Spin", date:"2026-11-07", time:"14:00", tz:"America/New_York", buyIn:0, currency:"Chips", prizes:{ participation:null, winner:"Lucky Sevens Ring", extra:null } },
+      { name:"Lucky Sevens Day Shift", date:"2026-11-07", time:"15:00", tz:"America/New_York", buyIn:25000, currency:"Chips", prizes:{ participation:null, winner:"Lucky Sevens Ring", extra:null } },
+      { name:"Lucky Sevens Prime Time", date:"2026-11-07", time:"17:00", tz:"America/New_York", buyIn:100000, currency:"Chips", prizes:{ participation:null, winner:"Lucky Sevens Ring", extra:null } },
+      { name:"Lucky Sevens Saturday Showdown", date:"2026-11-07", time:"19:00", tz:"America/New_York", buyIn:5000000, currency:"Chips", prizes:{ participation:"Lucky Sevens Chain", winner:"Lucky Sevens Ring", extra:null } },
+      { name:"Lucky Sevens Last Call", date:"2026-11-07", time:"21:00", tz:"America/New_York", buyIn:100000, currency:"Chips", prizes:{ participation:null, winner:"Lucky Sevens Ring", extra:null } },
+      { name:"Lucky Sevens Late Night", date:"2026-11-07", time:"22:00", tz:"America/New_York", buyIn:300000, currency:"Chips", prizes:{ participation:null, winner:"Lucky Sevens Ring", extra:null } },
+      { name:"Lucky Sevens Midnight Spin", date:"2026-11-07", time:"23:00", tz:"America/New_York", buyIn:1000000, currency:"Chips", prizes:{ participation:null, winner:"Lucky Sevens Ring", extra:null } },
+      { name:"Lucky Sevens Night Shift", date:"2026-11-08", time:"01:00", tz:"America/New_York", buyIn:500000, currency:"Chips", prizes:{ participation:null, winner:"Lucky Sevens Ring", extra:null } },
+      { name:"Lucky Sevens Daily Spin", date:"2026-11-08", time:"14:00", tz:"America/New_York", buyIn:0, currency:"Chips", prizes:{ participation:null, winner:"Lucky Sevens Ring", extra:null } },
+      { name:"Lucky Sevens Day Shift", date:"2026-11-08", time:"15:00", tz:"America/New_York", buyIn:50000, currency:"Chips", prizes:{ participation:null, winner:"Lucky Sevens Ring", extra:null } },
+      { name:"Lucky Sevens Happy Hour", date:"2026-11-08", time:"16:00", tz:"America/New_York", buyIn:1000000, currency:"Chips", prizes:{ participation:null, winner:"Lucky Sevens Ring", extra:null } },
+      { name:"Lucky Sevens Prime Time", date:"2026-11-08", time:"17:00", tz:"America/New_York", buyIn:100000, currency:"Chips", prizes:{ participation:null, winner:"Lucky Sevens Ring", extra:null } },
+      { name:"Lucky Sevens Sunday Championship", date:"2026-11-08", time:"19:00", tz:"America/New_York", buyIn:10000000, currency:"Chips", prizes:{ participation:"Lucky Sevens Chain", winner:"Lucky Sevens Ring", extra:null } },
+      { name:"Lucky Sevens Last Call", date:"2026-11-08", time:"21:00", tz:"America/New_York", buyIn:750000, currency:"Chips", prizes:{ participation:null, winner:"Lucky Sevens Ring", extra:null } },
+      { name:"Lucky Sevens Late Night", date:"2026-11-08", time:"22:00", tz:"America/New_York", buyIn:500000, currency:"Chips", prizes:{ participation:null, winner:"Lucky Sevens Ring", extra:null } },
+      { name:"Lucky Sevens Midnight Spin", date:"2026-11-08", time:"23:00", tz:"America/New_York", buyIn:1000000, currency:"Chips", prizes:{ participation:null, winner:"Lucky Sevens Ring", extra:null } },
+      { name:"Lucky Sevens Night Shift", date:"2026-11-09", time:"01:00", tz:"America/New_York", buyIn:25000, currency:"Chips", prizes:{ participation:null, winner:"Lucky Sevens Ring", extra:null } },
+      { name:"Lucky Sevens Opener", date:"2026-11-09", time:"12:00", tz:"America/New_York", buyIn:25000, currency:"Chips", prizes:{ participation:null, winner:"Lucky Sevens Ring", extra:null } },
+      { name:"Lucky Sevens Daily Spin", date:"2026-11-09", time:"14:00", tz:"America/New_York", buyIn:0, currency:"Chips", prizes:{ participation:null, winner:"Lucky Sevens Ring", extra:null } },
+      { name:"Lucky Sevens Day Shift", date:"2026-11-09", time:"15:00", tz:"America/New_York", buyIn:25000, currency:"Chips", prizes:{ participation:null, winner:"Lucky Sevens Ring", extra:null } },
+      { name:"Lucky Sevens Happy Hour", date:"2026-11-09", time:"16:00", tz:"America/New_York", buyIn:25000, currency:"Chips", prizes:{ participation:null, winner:"Lucky Sevens Ring", extra:null } },
+      { name:"Lucky Sevens Prime Time", date:"2026-11-09", time:"17:00", tz:"America/New_York", buyIn:25000, currency:"Chips", prizes:{ participation:null, winner:"Lucky Sevens Ring", extra:null } },
+      { name:"Lucky Sevens Headline", date:"2026-11-09", time:"19:00", tz:"America/New_York", buyIn:25000, currency:"Chips", prizes:{ participation:null, winner:"Lucky Sevens Ring", extra:null } },
+      { name:"Lucky Sevens Last Call", date:"2026-11-09", time:"21:00", tz:"America/New_York", buyIn:25000, currency:"Chips", prizes:{ participation:null, winner:"Lucky Sevens Ring", extra:null } },
+      { name:"Lucky Sevens Late Night", date:"2026-11-09", time:"22:00", tz:"America/New_York", buyIn:25000, currency:"Chips", prizes:{ participation:null, winner:"Lucky Sevens Ring", extra:null } },
+      { name:"Lucky Sevens Midnight Spin", date:"2026-11-09", time:"23:00", tz:"America/New_York", buyIn:25000, currency:"Chips", prizes:{ participation:null, winner:"Lucky Sevens Ring", extra:null } },
+      { name:"Lucky Sevens Night Shift", date:"2026-11-10", time:"01:00", tz:"America/New_York", buyIn:25000, currency:"Chips", prizes:{ participation:null, winner:"Lucky Sevens Ring", extra:null } },
+      { name:"Lucky Sevens Opener", date:"2026-11-10", time:"12:00", tz:"America/New_York", buyIn:50000, currency:"Chips", prizes:{ participation:null, winner:"Lucky Sevens Ring", extra:null } },
+      { name:"Lucky Sevens Daily Spin", date:"2026-11-10", time:"14:00", tz:"America/New_York", buyIn:0, currency:"Chips", prizes:{ participation:null, winner:"Lucky Sevens Ring", extra:null } },
+      { name:"Lucky Sevens Day Shift", date:"2026-11-10", time:"15:00", tz:"America/New_York", buyIn:100000, currency:"Chips", prizes:{ participation:null, winner:"Lucky Sevens Ring", extra:null } },
+      { name:"Lucky Sevens Happy Hour", date:"2026-11-10", time:"16:00", tz:"America/New_York", buyIn:200000, currency:"Chips", prizes:{ participation:null, winner:"Lucky Sevens Ring", extra:null } },
+      { name:"Lucky Sevens Prime Time", date:"2026-11-10", time:"17:00", tz:"America/New_York", buyIn:300000, currency:"Chips", prizes:{ participation:null, winner:"Lucky Sevens Ring", extra:null } },
+      { name:"Lucky Sevens Headline", date:"2026-11-10", time:"19:00", tz:"America/New_York", buyIn:500000, currency:"Chips", prizes:{ participation:null, winner:"Lucky Sevens Ring", extra:null } },
+      { name:"Lucky Sevens Last Call", date:"2026-11-10", time:"21:00", tz:"America/New_York", buyIn:1000000, currency:"Chips", prizes:{ participation:null, winner:"Lucky Sevens Ring", extra:null } },
+      { name:"Lucky Sevens Late Night", date:"2026-11-10", time:"22:00", tz:"America/New_York", buyIn:2000000, currency:"Chips", prizes:{ participation:null, winner:"Lucky Sevens Ring", extra:null } },
+      { name:"Lucky Sevens Midnight Spin", date:"2026-11-10", time:"23:00", tz:"America/New_York", buyIn:2500000, currency:"Chips", prizes:{ participation:null, winner:"Lucky Sevens Ring", extra:null } },
+      { name:"Lucky Sevens Night Shift", date:"2026-11-11", time:"01:00", tz:"America/New_York", buyIn:750000, currency:"Chips", prizes:{ participation:null, winner:"Lucky Sevens Ring", extra:null } },
+      { name:"Lucky Sevens Opener", date:"2026-11-11", time:"12:00", tz:"America/New_York", buyIn:200000, currency:"Chips", prizes:{ participation:null, winner:"Lucky Sevens Ring", extra:null } },
+      { name:"Lucky Sevens Daily Spin", date:"2026-11-11", time:"14:00", tz:"America/New_York", buyIn:0, currency:"Chips", prizes:{ participation:null, winner:"Lucky Sevens Ring", extra:null } },
+      { name:"Lucky Sevens Day Shift", date:"2026-11-11", time:"15:00", tz:"America/New_York", buyIn:25000, currency:"Chips", prizes:{ participation:null, winner:"Lucky Sevens Ring", extra:null } },
+      { name:"Lucky Sevens Happy Hour", date:"2026-11-11", time:"16:00", tz:"America/New_York", buyIn:25000, currency:"Chips", prizes:{ participation:null, winner:"Lucky Sevens Ring", extra:null } },
+      { name:"Lucky Sevens Midweek Rush", date:"2026-11-11", time:"19:00", tz:"America/New_York", buyIn:750000, currency:"Chips", prizes:{ participation:null, winner:"Lucky Sevens Ring", extra:null } },
+      { name:"Lucky Sevens Last Call", date:"2026-11-11", time:"21:00", tz:"America/New_York", buyIn:750000, currency:"Chips", prizes:{ participation:null, winner:"Lucky Sevens Ring", extra:null } },
+      { name:"Lucky Sevens Late Night", date:"2026-11-11", time:"22:00", tz:"America/New_York", buyIn:300000, currency:"Chips", prizes:{ participation:null, winner:"Lucky Sevens Ring", extra:null } },
+      { name:"Lucky Sevens Midnight Spin", date:"2026-11-11", time:"23:00", tz:"America/New_York", buyIn:2000000, currency:"Chips", prizes:{ participation:null, winner:"Lucky Sevens Ring", extra:null } },
+      { name:"Lucky Sevens Night Shift", date:"2026-11-12", time:"01:00", tz:"America/New_York", buyIn:750000, currency:"Chips", prizes:{ participation:null, winner:"Lucky Sevens Ring", extra:null } },
+      { name:"Lucky Sevens Opener", date:"2026-11-12", time:"12:00", tz:"America/New_York", buyIn:750000, currency:"Chips", prizes:{ participation:null, winner:"Lucky Sevens Ring", extra:null } },
+      { name:"Lucky Sevens Daily Spin", date:"2026-11-12", time:"14:00", tz:"America/New_York", buyIn:0, currency:"Chips", prizes:{ participation:null, winner:"Lucky Sevens Ring", extra:null } },
+      { name:"Lucky Sevens Day Shift", date:"2026-11-12", time:"15:00", tz:"America/New_York", buyIn:1000000, currency:"Chips", prizes:{ participation:null, winner:"Lucky Sevens Ring", extra:null } },
+      { name:"Lucky Sevens Happy Hour", date:"2026-11-12", time:"16:00", tz:"America/New_York", buyIn:2000000, currency:"Chips", prizes:{ participation:null, winner:"Lucky Sevens Ring", extra:null } },
+      { name:"Lucky Sevens Prime Time", date:"2026-11-12", time:"17:00", tz:"America/New_York", buyIn:2000000, currency:"Chips", prizes:{ participation:null, winner:"Lucky Sevens Ring", extra:null } },
+      { name:"Lucky Sevens Thunder Thursday", date:"2026-11-12", time:"19:00", tz:"America/New_York", buyIn:5000000, currency:"Chips", prizes:{ participation:"Lucky Sevens Chain", winner:"Lucky Sevens Ring", extra:null } },
+      { name:"Lucky Sevens Last Call", date:"2026-11-12", time:"21:00", tz:"America/New_York", buyIn:2500000, currency:"Chips", prizes:{ participation:null, winner:"Lucky Sevens Ring", extra:null } },
+      { name:"Lucky Sevens Late Night", date:"2026-11-12", time:"22:00", tz:"America/New_York", buyIn:2500000, currency:"Chips", prizes:{ participation:null, winner:"Lucky Sevens Ring", extra:null } },
+      { name:"Lucky Sevens Midnight Spin", date:"2026-11-12", time:"23:00", tz:"America/New_York", buyIn:2500000, currency:"Chips", prizes:{ participation:null, winner:"Lucky Sevens Ring", extra:null } },
+      { name:"Lucky Sevens Night Shift", date:"2026-11-13", time:"01:00", tz:"America/New_York", buyIn:750000, currency:"Chips", prizes:{ participation:null, winner:"Lucky Sevens Ring", extra:null } },
+      { name:"Lucky Sevens Opener", date:"2026-11-13", time:"12:00", tz:"America/New_York", buyIn:200000, currency:"Chips", prizes:{ participation:null, winner:"Lucky Sevens Ring", extra:null } },
+      { name:"Lucky Sevens Daily Spin", date:"2026-11-13", time:"14:00", tz:"America/New_York", buyIn:0, currency:"Chips", prizes:{ participation:null, winner:"Lucky Sevens Ring", extra:null } },
+      { name:"Lucky Sevens Day Shift", date:"2026-11-13", time:"15:00", tz:"America/New_York", buyIn:50000, currency:"Chips", prizes:{ participation:null, winner:"Lucky Sevens Ring", extra:null } },
+      { name:"Lucky Sevens Happy Hour", date:"2026-11-13", time:"16:00", tz:"America/New_York", buyIn:100000, currency:"Chips", prizes:{ participation:null, winner:"Lucky Sevens Ring", extra:null } },
+      { name:"Lucky Sevens Prime Time", date:"2026-11-13", time:"17:00", tz:"America/New_York", buyIn:500000, currency:"Chips", prizes:{ participation:null, winner:"Lucky Sevens Ring", extra:null } },
+      { name:"Lucky Sevens Friday Frenzy", date:"2026-11-13", time:"19:00", tz:"America/New_York", buyIn:2500000, currency:"Chips", prizes:{ participation:null, winner:"Lucky Sevens Ring", extra:null } },
+      { name:"Lucky Sevens Last Call", date:"2026-11-13", time:"21:00", tz:"America/New_York", buyIn:200000, currency:"Chips", prizes:{ participation:null, winner:"Lucky Sevens Ring", extra:null } },
+      { name:"Lucky Sevens Late Night", date:"2026-11-13", time:"22:00", tz:"America/New_York", buyIn:2000000, currency:"Chips", prizes:{ participation:null, winner:"Lucky Sevens Ring", extra:null } },
+      { name:"Lucky Sevens Midnight Frenzy", date:"2026-11-13", time:"23:00", tz:"America/New_York", buyIn:5000000, currency:"Chips", prizes:{ participation:"Lucky Sevens Chain", winner:"Lucky Sevens Ring", extra:null } },
+      { name:"Lucky Sevens Night Shift", date:"2026-11-14", time:"01:00", tz:"America/New_York", buyIn:750000, currency:"Chips", prizes:{ participation:null, winner:"Lucky Sevens Ring", extra:null } },
+      { name:"Lucky Sevens Opener", date:"2026-11-14", time:"12:00", tz:"America/New_York", buyIn:300000, currency:"Chips", prizes:{ participation:null, winner:"Lucky Sevens Ring", extra:null } },
+      { name:"Lucky Sevens Daily Spin", date:"2026-11-14", time:"14:00", tz:"America/New_York", buyIn:0, currency:"Chips", prizes:{ participation:null, winner:"Lucky Sevens Ring", extra:null } },
+      { name:"Lucky Sevens Day Shift", date:"2026-11-14", time:"15:00", tz:"America/New_York", buyIn:50000, currency:"Chips", prizes:{ participation:null, winner:"Lucky Sevens Ring", extra:null } },
+      { name:"Lucky Sevens Prime Time", date:"2026-11-14", time:"17:00", tz:"America/New_York", buyIn:200000, currency:"Chips", prizes:{ participation:null, winner:"Lucky Sevens Ring", extra:null } },
+      { name:"Lucky Sevens Saturday Showdown", date:"2026-11-14", time:"19:00", tz:"America/New_York", buyIn:5000000, currency:"Chips", prizes:{ participation:"Lucky Sevens Chain", winner:"Lucky Sevens Ring", extra:null } },
+      { name:"Lucky Sevens Last Call", date:"2026-11-14", time:"21:00", tz:"America/New_York", buyIn:200000, currency:"Chips", prizes:{ participation:null, winner:"Lucky Sevens Ring", extra:null } },
+      { name:"Lucky Sevens Late Night", date:"2026-11-14", time:"22:00", tz:"America/New_York", buyIn:500000, currency:"Chips", prizes:{ participation:null, winner:"Lucky Sevens Ring", extra:null } },
+      { name:"Lucky Sevens Midnight Spin", date:"2026-11-14", time:"23:00", tz:"America/New_York", buyIn:2000000, currency:"Chips", prizes:{ participation:null, winner:"Lucky Sevens Ring", extra:null } },
+      { name:"Lucky Sevens Night Shift", date:"2026-11-15", time:"01:00", tz:"America/New_York", buyIn:750000, currency:"Chips", prizes:{ participation:null, winner:"Lucky Sevens Ring", extra:null } },
+      { name:"Lucky Sevens Daily Spin", date:"2026-11-15", time:"14:00", tz:"America/New_York", buyIn:0, currency:"Chips", prizes:{ participation:null, winner:"Lucky Sevens Ring", extra:null } },
+      { name:"Lucky Sevens Day Shift", date:"2026-11-15", time:"15:00", tz:"America/New_York", buyIn:100000, currency:"Chips", prizes:{ participation:null, winner:"Lucky Sevens Ring", extra:null } },
+      { name:"Lucky Sevens Happy Hour", date:"2026-11-15", time:"16:00", tz:"America/New_York", buyIn:2000000, currency:"Chips", prizes:{ participation:null, winner:"Lucky Sevens Ring", extra:null } },
+      { name:"Lucky Sevens Prime Time", date:"2026-11-15", time:"17:00", tz:"America/New_York", buyIn:200000, currency:"Chips", prizes:{ participation:null, winner:"Lucky Sevens Ring", extra:null } },
+      { name:"Lucky Sevens Main Event", date:"2026-11-15", time:"19:00", tz:"America/New_York", buyIn:20000000, currency:"Chips", prizes:{ participation:"Lucky Sevens Chain", winner:"Lucky Sevens Ring", extra:null } },
+      { name:"Lucky Sevens Last Call", date:"2026-11-15", time:"21:00", tz:"America/New_York", buyIn:1000000, currency:"Chips", prizes:{ participation:null, winner:"Lucky Sevens Ring", extra:null } },
+      { name:"Lucky Sevens Late Night", date:"2026-11-15", time:"22:00", tz:"America/New_York", buyIn:750000, currency:"Chips", prizes:{ participation:null, winner:"Lucky Sevens Ring", extra:null } },
+      { name:"Lucky Sevens Midnight Spin", date:"2026-11-15", time:"23:00", tz:"America/New_York", buyIn:2000000, currency:"Chips", prizes:{ participation:null, winner:"Lucky Sevens Ring", extra:null } },
+      { name:"Lucky Sevens Night Shift", date:"2026-11-16", time:"01:00", tz:"America/New_York", buyIn:25000, currency:"Chips", prizes:{ participation:null, winner:"Lucky Sevens Ring", extra:null } },
+      { name:"Lucky Sevens Opener", date:"2026-11-16", time:"12:00", tz:"America/New_York", buyIn:25000, currency:"Chips", prizes:{ participation:null, winner:"Lucky Sevens Ring", extra:null } },
+      { name:"Lucky Sevens Daily Spin", date:"2026-11-16", time:"14:00", tz:"America/New_York", buyIn:0, currency:"Chips", prizes:{ participation:null, winner:"Lucky Sevens Ring", extra:null } },
+      { name:"Lucky Sevens Day Shift", date:"2026-11-16", time:"15:00", tz:"America/New_York", buyIn:25000, currency:"Chips", prizes:{ participation:null, winner:"Lucky Sevens Ring", extra:null } },
+      { name:"Lucky Sevens Happy Hour", date:"2026-11-16", time:"16:00", tz:"America/New_York", buyIn:25000, currency:"Chips", prizes:{ participation:null, winner:"Lucky Sevens Ring", extra:null } },
+      { name:"Lucky Sevens Prime Time", date:"2026-11-16", time:"17:00", tz:"America/New_York", buyIn:25000, currency:"Chips", prizes:{ participation:null, winner:"Lucky Sevens Ring", extra:null } },
+      { name:"Lucky Sevens Closing Night Finale", date:"2026-11-16", time:"19:00", tz:"America/New_York", buyIn:10000000, currency:"Chips", prizes:{ participation:"Lucky Sevens Chain", winner:"Lucky Sevens Ring", extra:null } },
+      { name:"Lucky Sevens Last Call", date:"2026-11-16", time:"21:00", tz:"America/New_York", buyIn:25000, currency:"Chips", prizes:{ participation:null, winner:"Lucky Sevens Ring", extra:null } },
+      { name:"Lucky Sevens Late Night", date:"2026-11-16", time:"22:00", tz:"America/New_York", buyIn:25000, currency:"Chips", prizes:{ participation:null, winner:"Lucky Sevens Ring", extra:null } },
+      { name:"Lucky Sevens Midnight Spin", date:"2026-11-16", time:"23:00", tz:"America/New_York", buyIn:25000, currency:"Chips", prizes:{ participation:null, winner:"Lucky Sevens Ring", extra:null } },
+      { name:"Lucky Sevens Night Shift", date:"2026-11-17", time:"01:00", tz:"America/New_York", buyIn:10000, currency:"Chips", prizes:{ participation:null, winner:"Lucky Sevens Ring", extra:null } },
+      { name:"Lucky Sevens Opener", date:"2026-11-17", time:"12:00", tz:"America/New_York", buyIn:25000, currency:"Chips", prizes:{ participation:null, winner:"Lucky Sevens Ring", extra:null } },
+      { name:"Lucky Sevens Daily Spin", date:"2026-11-17", time:"14:00", tz:"America/New_York", buyIn:0, currency:"Chips", prizes:{ participation:null, winner:"Lucky Sevens Ring", extra:null } },
+      { name:"Lucky Sevens Day Shift", date:"2026-11-17", time:"15:00", tz:"America/New_York", buyIn:50000, currency:"Chips", prizes:{ participation:null, winner:"Lucky Sevens Ring", extra:null } },
+      { name:"Lucky Sevens Happy Hour", date:"2026-11-17", time:"16:00", tz:"America/New_York", buyIn:100000, currency:"Chips", prizes:{ participation:null, winner:"Lucky Sevens Ring", extra:null } },
+      { name:"Lucky Sevens Prime Time", date:"2026-11-17", time:"17:00", tz:"America/New_York", buyIn:200000, currency:"Chips", prizes:{ participation:null, winner:"Lucky Sevens Ring", extra:null } },
+      { name:"Lucky Sevens Headline", date:"2026-11-17", time:"19:00", tz:"America/New_York", buyIn:500000, currency:"Chips", prizes:{ participation:null, winner:"Lucky Sevens Ring", extra:null } },
+      { name:"Lucky Sevens Last Call", date:"2026-11-17", time:"21:00", tz:"America/New_York", buyIn:750000, currency:"Chips", prizes:{ participation:null, winner:"Lucky Sevens Ring", extra:null } },
+      { name:"Lucky Sevens Late Night", date:"2026-11-17", time:"22:00", tz:"America/New_York", buyIn:1000000, currency:"Chips", prizes:{ participation:null, winner:"Lucky Sevens Ring", extra:null } },
+      { name:"Lucky Sevens Midnight Spin", date:"2026-11-17", time:"23:00", tz:"America/New_York", buyIn:2000000, currency:"Chips", prizes:{ participation:null, winner:"Lucky Sevens Ring", extra:null } },
+      { name:"Lucky Sevens Night Shift", date:"2026-11-18", time:"01:00", tz:"America/New_York", buyIn:500000, currency:"Chips", prizes:{ participation:null, winner:"Lucky Sevens Ring", extra:null } },
     ]
   }
 ];
@@ -1396,13 +1541,11 @@ function evCard(o, opts){
   if (hasPrizes(o.prizes)) pills.push('<span class="b prize">★ Prizes</span>');
   if (o.patched) pills.push('<span class="b moved">Changed this week</span>');
 
-  const rows = [
-    ["Buy-in", buyInText(o)],
-    ["Starting stack", o.stack != null ? num(o.stack) : "—"],
-    ["Speed", (o.speed && SPEEDS[o.speed]) || "—"],
-    ["Start time", fmtTime(o.instant) + " " + zoneAbbr(o.instant)],
-    ["Date", fmtKey(o.key, { weekday:"short", day:"numeric", month:"short", year:"numeric" })]
-  ];
+  const rows = [["Buy-in", buyInText(o)]];
+  if (o.stack != null) rows.push(["Starting stack", num(o.stack)]);
+  if (o.speed && SPEEDS[o.speed]) rows.push(["Speed", SPEEDS[o.speed]]);
+  rows.push(["Start time", fmtTime(o.instant) + " " + zoneAbbr(o.instant)],
+            ["Date", fmtKey(o.key, { weekday:"short", day:"numeric", month:"short", year:"numeric" })]);
   if (o.category === "club" && o.club) rows.push(["Club", CLUBS[o.club] || o.club]);
   if (o.prizePool != null) rows.push(["Prize pool", prizePoolText(o)]);
   if (o.seriesName) rows.push(["Series", o.seriesName]);
@@ -1511,11 +1654,9 @@ function renderNext(){
     if (hero.buyIn === 0) badges.push('<span class="b free">Freeroll</span>');
     if (hasPrizes(hero.prizes)) badges.push('<span class="b prize">★ Prizes</span>');
 
-    const rows = [
-      ["Buy-in", buyInText(hero)],
-      ["Starting stack", hero.stack != null ? num(hero.stack) : "—"],
-      ["Speed", (hero.speed && SPEEDS[hero.speed]) || "—"]
-    ];
+    const rows = [["Buy-in", buyInText(hero)]];
+    if (hero.stack != null) rows.push(["Starting stack", num(hero.stack)]);
+    if (hero.speed && SPEEDS[hero.speed]) rows.push(["Speed", SPEEDS[hero.speed]]);
     if (hero.category === "club" && hero.club) rows.push(["Club", CLUBS[hero.club] || hero.club]);
     if (hero.prizePool != null) rows.push(["Prize pool", prizePoolText(hero)]);
     if (hero.seriesName) rows.push(["Series", hero.seriesName]);
@@ -1732,12 +1873,15 @@ function defaultWeekIdx(weeks, tk){
 }
 
 /* A series' date range, for both the list card and the detail page. When
-   `weeks` is set (even before any events exist — e.g. Spooky Stacks' two
-   October runs), show each part's own range labelled instead of one
-   overall span, so "two separate runs" doesn't read as one continuous
-   block with a gap in the middle. */
+   `weeks` has a gap between runs (e.g. two separate October runs), show
+   each part's own range labelled instead of one overall span, so it
+   doesn't read as one continuous block. Back-to-back weeks (a week picker
+   over one continuous run) just show the overall span. */
 function seriesRangeText(s){
-  if (s.weeks && s.weeks.length > 1)
+  const gap = s.weeks && s.weeks.length > 1 && s.weeks.some(function(w, i){
+    return i > 0 && w.start !== keyAdd(s.weeks[i - 1].end, 1);
+  });
+  if (gap)
     return s.weeks.map(function(w){
       return (w.label ? w.label + ": " : "") +
         fmtKey(w.start, { day:"numeric", month:"short" }) + "–" +
@@ -1904,7 +2048,7 @@ function renderSeriesDetail(id){
       "</div>";
     if (speedsPresent.length || anyPrized)
       filterRows += '<div class="filters" role="group" aria-label="Filter ' + esc(s.name) + ' by speed and prizing">' +
-        fChip("speed", "", "Any speed", !f.speed) +
+        (speedsPresent.length ? fChip("speed", "", "Any speed", !f.speed) : "") +
         speedsPresent.map(function(sp){ return fChip("speed", sp, SPEEDS[sp] || sp, f.speed === sp); }).join("") +
         (anyPrized ? fChip("prizes", "1", "★ Has prizes", f.prizes) : "") +
       "</div>";
