@@ -69,7 +69,7 @@
   --a-orange:#FF9A4D;
   --a-violet:#C0A2F0;
   --a-teal:#6FD3C4;
-  --a-red:#FF5A5A;
+  --a-red:#FF6B6B;
   --a-mpt:#22D3EE;
   --grad-mpt:linear-gradient(100deg,#2FE6B8 0%,#22D3EE 45%,#3E7BFA 100%);
 
@@ -519,6 +519,8 @@ button.ser-open:hover{ border-color:var(--line-strong); }
 .hl-teaser[data-theme="gold"] .ev-time b{
   background:var(--grad-gold); -webkit-background-clip:text; background-clip:text; color:transparent;
 }
+/* Lucky Sevens — its Next Up teaser label in the series' red, not white. */
+.hl-teaser[data-accent="red"] .ev-time b{ color:var(--a-red); }
 /* List-card footer: status pill + a plain-text call to action, so the card
    itself signals "tap me" without a second, separate toggle control. */
 .ser-foot{ display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap;
@@ -583,7 +585,7 @@ footer.site b{ color:var(--text-dim); font-weight:600; }
       <img class="logo" src="assets/logo.png" alt="Vegas Infinite" width="1120" height="173">
     </div>
     <h1 class="grad">Tournament Schedule</h1>
-    <div><span class="kicker">MTT Live Events</span></div>
+    <div><span class="kicker">Live Events</span></div>
   </div>
 </header>
 
@@ -851,9 +853,10 @@ const SERIES = [
     events:[]
   },
   {
-    id:"lucky-sevens-2026", name:"Lucky Sevens", short:"LUCKY 7S", accent:"red",
+    id:"lucky-sevens-2026", name:"Lucky Sevens Series", short:"LUCKY SEVENS", accent:"red",
     start:"2026-11-04", end:"2026-11-18",
-    blurb:"Every winner earns the Lucky Sevens Ring. Play any highlight event (5M buy-in or more) to earn the Lucky Sevens Chain.",
+    blurb:"A brand-new series, never seen before in Vegas Infinite. Every winner earns the Lucky Sevens Ring. " +
+          "Play any highlight event (5M buy-in or more) to earn the Lucky Sevens Chain.",
     weeks:[
       { label:"Week 1", start:"2026-11-04", end:"2026-11-10" },
       { label:"Week 2", start:"2026-11-11", end:"2026-11-18" }
@@ -1152,6 +1155,8 @@ function fmtTime(instant){
     { timeZone: VIEW_TZ, hour:"numeric", minute:"2-digit" }).format(instant);
 }
 function zoneAbbr(instant){
+  // Players are told "ET" year-round; the EDT/EST switch is already applied to the times.
+  if (VIEW_TZ === "America/New_York") return "ET";
   try {
     const parts = new Intl.DateTimeFormat("en-US",
       { timeZone: VIEW_TZ, timeZoneName:"short", hour:"numeric" }).formatToParts(instant);
@@ -1793,7 +1798,7 @@ function seriesTeaser(s, n, tk){
      wearing both classes) — .ev-head already resets `border` to lay down
      its own left accent stripe, which would fight .ev's full border if
      both classes landed on the same element. */
-  return '<article class="ev hl-teaser"' + seriesThemeAttr(s) + ' style="--accent:var(--a-' + esc(s.accent || "gold") + ')">' +
+  return '<article class="ev hl-teaser"' + seriesThemeAttr(s) + ' data-accent="' + esc(s.accent || "gold") + '" style="--accent:var(--a-' + esc(s.accent || "gold") + ')">' +
     '<button class="ev-head" data-goto-series="' + esc(s.id) + '">' +
       '<span class="ev-time"><b>' + esc(s.short || "") + "</b></span>" +
       '<span class="ev-main">' +
